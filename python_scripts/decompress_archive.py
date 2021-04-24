@@ -23,14 +23,20 @@ if not os.path.exists(subdir):
 
 dctx = zstandard.ZstdDecompressor()
 errors = []
+for i in range(len(offsets)):
+    start_offset = offsets[i]
 
-for i in range(len(offsets)-1):
-    print("Decompressing segment", offsets[i], "-", offsets[i+1])
-    data_segment = data[offsets[i]:offsets[i+1]]
+    if (i+1 > len(offsets)-1):   
+        end_offset = len(data)
+    else:
+        end_offset = offsets[i+1]
+
+    print("Decompressing segment", start_offset, "-", end_offset)
+    data_segment = data[start_offset:end_offset]
     try:
         decompressed = dctx.decompress(data_segment)
     except:
-        errors.append(["[!] ERROR: COULD NOT DECROMPRESS SEGEMENT " + str(offsets[i]) + " - " + str(offsets[i+1]), traceback.format_exc()])
+        errors.append(["[!] ERROR: COULD NOT DECROMPRESS SEGEMENT " + str(start_offset) + " - " + str(end_offset), traceback.format_exc()])
         continue
 
     out_file_name = str(i) + "_uncompressed_" + sys.argv[1].split("\\")[1]
