@@ -31,5 +31,5 @@
 `python ./archive_extractor.py <Archive Path>`
 
 #### Description:
-Attempts to uncompress and separate the archive files into their decompressed state. <br>
+Attempts to decompress and separate the archive files into their uncompressed state. <br>
 Uncompressed files will be placed in sub-directories adjacent to the Python script.
