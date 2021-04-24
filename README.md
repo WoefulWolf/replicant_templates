@@ -33,3 +33,5 @@
 #### Description:
 Attempts to decompress and separate the archive files into their uncompressed state. <br>
 Uncompressed files will be placed in sub-directories adjacent to the Python script.
+
+### If you wish to contribute or learn more, please check out the [NieR:Modding Discord Server.](https://discord.gg/7F76ZVv)
