@@ -42,10 +42,14 @@ struct {
         local uint32 nameStartOffset = FTell();
         uint32  offsetToName;
         uint32  fileSize;
-        uint32  offsetToFileStart;
-        uint32  offsetToFileEnd;
+        local uint32 contentStartOffset = FTell();
+        uint32  offsetToContentStart;
+        uint32  offsetToContentEnd;
         FSeek(nameStartOffset + offsetToName);
         string name;
+        
+        FSeek( contentStartOffset + offsetToContentStart );
+        #include "BXON.bt"
     } assetPack[header.assetPackCount] <optimize=false>;
 } assetPacks;
 }
@@ -58,11 +62,14 @@ struct {
         local uint32 nameStartOffset = FTell();
         uint32  offsetToName;
         uint32  fileSize;
-        uint32  offsetToFileStart;
+        local uint32 contentStartOffset = FTell();
+        uint32  offsetToContentStart;
         uint32  Unknown0;
         FSeek(nameStartOffset + offsetToName);
         string name;
         
+        FSeek( contentStartOffset + offsetToContentStart );
+        #include "BXON.bt"
     } file[header.fileCount] <optimize=false>;
 } files;
 }
