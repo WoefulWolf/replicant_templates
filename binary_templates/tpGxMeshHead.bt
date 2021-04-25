@@ -1,0 +1,119 @@
+// Woeful_Wolf
+
+struct {
+	struct {
+		uint32	hash <format=hex>;
+		float	unknownFloat0 <format=hex>;
+		float	unknownFloat1 <format=hex>;
+		float	unknownFloat2 <format=hex>;
+		float	unknownFloat3 <format=hex>;
+		float	unknownFloat4 <format=hex>;
+		uint32	unknownUInt32_0;
+		uint32  unknownFlag <format=hex>;
+		uint32	unknownUInt32_1;
+		ushort	unknownShort0;
+		ushort	unknownShort1;
+		ushort	unknownShort2;
+		ushort	unknownShort3;
+		uint32	unknownCount0;
+		local uint32 unknown0StartOffset = FTell();
+		uint32	offsetToUnknown0;
+		uint32 	unknownCount1;
+		local uint32 unknown1StartOffset = FTell();
+		uint32	offsetToUnknown1;
+		uint32 	unknownCount2;
+		local uint32 unknown2StartOffset = FTell();
+		uint32	offsetToUnknown2;
+		uint32 	unknownCount3;
+		local uint32 unknown3StartOffset = FTell();
+		uint32	offsetToUnknown3;
+		uint32 	unknownCount4;
+		local uint32 unknown4StartOffset = FTell();
+		uint32	offsetToUnknown4;
+	} header;
+
+	FSeek( header.unknown0StartOffset + header.offsetToUnknown0 );
+	struct {
+	struct {
+		local uint32 nameStartOffset = FTell();
+		uint32  offsetToName;
+		local uint32 returnPos = FTell();
+		FSeek(nameStartOffset + offsetToName);
+		string name;
+		FSeek(returnPos);
+		int32	unknownInt32;
+		float   unknownFloat[10];
+	} unknown0[header.unknownCount0] <optimize=false>;
+	} unknown0;
+
+	FSeek( header.unknown1StartOffset + header.offsetToUnknown1 );
+	struct {
+	struct {
+		local uint32 nameStartOffset = FTell();
+		uint32  offsetToName;
+		local uint32 returnPos = FTell();
+		FSeek(nameStartOffset + offsetToName);
+		string name;
+		FSeek(returnPos);
+		int32	unknownInt32;
+		float   unknownFloat[33];
+	} unknown1[header.unknownCount1] <optimize=false>;
+	} unknown1; 
+
+	FSeek( header.unknown2StartOffset + header.offsetToUnknown2 );
+	struct {
+	struct {
+		struct {
+			uint32  unknownUInt32[7];
+			uint32  unknownACount;
+			local uint32 unknownAStartOffset = FTell();
+			uint32  offsetToUnknownA;
+		} UnknownHead;
+
+		FSeek( UnknownHead.unknownAStartOffset + UnknownHead.offsetToUnknownA );
+
+		struct {
+			uint32  unknownIndexStart;
+			uint32  unknownUInt32[3];
+			byte	unknownIndex;
+			FSeek(((FTell() / 8) + 1) * 8);
+		} unknownA[UnknownHead.unknownACount] <optimize=false>;
+
+	} unknown2[header.unknownCount2] <optimize=false>;
+	} unknown2; 
+
+	FSeek( header.unknown3StartOffset + header.offsetToUnknown3 );
+	struct {
+		local uint32 nameStartOffset = FTell();
+		uint32 offsetToName;
+		local uint32 unknownByteStartOffset = FTell();
+		uint32 offsetToUnknownByte;
+		uint32 unknownUInt32;
+		FSeek(nameStartOffset + offsetToName);
+		string name;
+		FSeek(unknownByteStartOffset + offsetToUnknownByte);
+		byte unknownByte;
+	} unknown3;
+
+	FSeek( header.unknown4StartOffset + header.offsetToUnknown4 );
+	struct {
+		uint32 unknownUInt32_0;
+		uint32 unknownUInt32_1;
+		uint32 unknownUInt32_2;
+		uint32 unknownUInt32_3;
+	} unknown4;
+
+	struct {
+		float x;
+	} floats0[12604/12];
+
+	struct {
+		float x;
+	} floats1[(16808 - 12604)/4];
+
+	struct {
+		float x;
+	} floats2[(21012 - 16808)/4];
+	
+
+} tpGxMeshHead;
