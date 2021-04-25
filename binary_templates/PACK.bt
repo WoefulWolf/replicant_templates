@@ -1,15 +1,18 @@
+// Woeful_Wolf
+// Yretenai
+
 struct {
     char    id[4];
     uint32  version;
-    uint32  packFileSizeA;
-    uint32  packFileSizeB;
-    uint32  unknown0;
+    uint32  packFileTotalSize;
+    uint32  packFileSerializedSize;
+    uint32  packFileResourceSize;
     uint32  pathCount;
     local uint32 pathsStartOffset = FTell();
     uint32  offsetToPaths;
-    uint32  assetCount;
-    local uint32 assetsStartOffset = FTell();
-    uint32  offsetToAssets;
+    uint32  assetPackCount;
+    local uint32 assetPacksStartOffset = FTell();
+    uint32  offsetToAssetPacks;
     uint32  fileCount;
     local uint32 filesStartOffset = FTell();
     uint32  offsetToFiles;
@@ -31,8 +34,8 @@ struct{
 } paths;
 }
 
-if (header.assetCount != 0) {
-FSeek( header.assetsStartOffset + header.offsetToAssets );
+if (header.assetPackCount != 0) {
+FSeek( header.assetPacksStartOffset + header.offsetToAssetPacks );
 struct {
     struct {
         uint32  hash<format=hex>;
@@ -43,8 +46,8 @@ struct {
         uint32  offsetToFileEnd;
         FSeek(nameStartOffset + offsetToName);
         string name;
-    } file[header.assetCount] <optimize=false>;
-} assets;
+    } assetPack[header.assetPackCount] <optimize=false>;
+} assetPacks;
 }
 
 if (header.fileCount != 0) {
@@ -56,10 +59,10 @@ struct {
         uint32  offsetToName;
         uint32  fileSize;
         uint32  offsetToFileStart;
-        uint32  offsetToFileEnd;
+        uint32  Unknown0;
         FSeek(nameStartOffset + offsetToName);
         string name;
         
-    } subfile[header.fileCount] <optimize=false>;
+    } file[header.fileCount] <optimize=false>;
 } files;
 }
