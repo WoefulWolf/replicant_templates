@@ -19,19 +19,19 @@ struct {
 		ushort	unknownShort1;
 		ushort	unknownShort2;
 		ushort	unknownShort3;
-		uint32	unknownCount0;
+		uint32	unknownCount0 <comment="boneCount">;
 		local uint32 unknown0StartOffset = FTell();
 		uint32	offsetToUnknown0;
-		uint32 	unknownCount1;
+		uint32 	unknownCount1 <comment="boneDataCount">;
 		local uint32 unknown1StartOffset = FTell();
 		uint32	offsetToUnknown1;
-		uint32 	unknownCount2 <comment="objectCount">;
+		uint32 	unknownCount2 <comment="">;
 		local uint32 unknown2StartOffset = FTell();
 		uint32	offsetToUnknown2;
 		uint32 	unknownCount3 <comment="materialCount">;
 		local uint32 unknown3StartOffset = FTell();
 		uint32	offsetToUnknown3;
-		uint32 	unknownCount4;
+		uint32 	unknownCount4 <comment="objectGroupCount">;
 		local uint32 unknown4StartOffset = FTell();
 		uint32	offsetToUnknown4;
 	} header;
@@ -77,14 +77,14 @@ struct {
 
 	struct {
 		struct {
-			uint32  unknownIndexStart <comment="meshVertexIndexStart">;
+			uint32  unknownIndexStart <comment="">;
 			uint32  unknownUInt32[3];
-			byte	unknownIndex <comment="meshIndex">;
+			byte	unknownIndex <comment="">;
 			FSeek(((FTell() / 8) + 1) * 8);
-		} unknownA[UnknownHead.unknownACount] <optimize=false, comment="mesh">;
+		} unknownA[UnknownHead.unknownACount] <optimize=false, comment="">;
 		FSeek(((FTell() / 8) + 1) * 8);
-	} unknownA[header.unknownCount2] <optimize=false, comment="object">;
-	} unknown2 <comment="objects">; 
+	} unknownA[header.unknownCount2] <optimize=false, comment="">;
+	} unknown2 <comment="">; 
 
 	FSeek( header.unknown3StartOffset + header.offsetToUnknown3 );
 	struct {
@@ -100,28 +100,31 @@ struct {
 		FSeek(unknownByteStartOffset + offsetToUnknownByte);
 		byte unknownByte;
 		FSeek(returnPos);
-	} unknown3 [header.unknownCount3] <optimize=false>;
+	} unknown3[header.unknownCount3] <optimize=false>;
 	} unknown3 <comment="materials">;
 
 	FSeek( header.unknown4StartOffset + header.offsetToUnknown4 );
 	struct {
-		uint32 unknownUInt32_0;
-		uint32 unknownUInt32_1;
-		uint32 unknownUInt32_2;
-		uint32 unknownUInt32_3;
-	} unknown4;
-
 	struct {
+		uint32 unknownUInt32_0 <comment="objectGroupIndex">;
+		uint32 unknownUInt32_1 <comment="materialIndex">;
+		uint32 unknownUInt32_2 <comment="vertexStartIndex">;
+		uint32 unknownUInt32_3 <comment="vertexCount">;
 		struct {
 			float x;
 			float y;
 			float z;
-		} vertex;
-		
+		} boundingBoxCoord1;
 		struct {
-			float dunno[3];
-		} unknown;
+			float x;
+			float y;
+			float z;
+		} boundingBoxCoord2;
+	} unknown4[header.unknownCount4] <optimize=false>;
+	} unknown4 <comment="objectGroups">;
 
-	} vertices[10];
+	struct {
+
+	} vertices[header.unknownCount4];
 
 } tpGxMeshHead;

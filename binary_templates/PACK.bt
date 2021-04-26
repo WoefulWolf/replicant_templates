@@ -1,6 +1,12 @@
 // Woeful_Wolf
 // Yretenai
 
+struct fileResourceData (int arraySize)
+{
+    int id;
+    int array[arraySize];
+};
+
 struct {
     char    id[4];
     uint32  version;
@@ -65,11 +71,10 @@ struct {
         local uint32 contentStartOffset = FTell();
         uint32  offsetToContentStart;
         uint32  Unknown0;
+        local uint32 returnPos = FTell();
         FSeek(nameStartOffset + offsetToName);
-        string name;
-        
-        FSeek( contentStartOffset + offsetToContentStart );
-        #include "BXON.bt"
+        string name;        
+        FSeek(returnPos);
     } file[header.fileCount] <optimize=false>;
 } files;
 }

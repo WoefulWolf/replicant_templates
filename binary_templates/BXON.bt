@@ -13,7 +13,9 @@ struct {
     string AssetTypeName;
 
     FSeek(assetDataStartOffset + offsetToAssetData);
-    if (AssetTypeName == "tpGxMeshHead") {
+    if (AssetTypeName == "tpXonAssetHeader") {
+        // #include "tpXonAssetHeader.bt"
+    } else if (AssetTypeName == "tpGxMeshHead") {
         #include "tpGxMeshHead.bt"
     }
 } content;
