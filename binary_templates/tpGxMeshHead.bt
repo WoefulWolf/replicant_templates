@@ -12,7 +12,7 @@ struct {
 			float y;
 			float z;
 		} boundingBoxCoord2;
-		uint32	unknownUInt32_0;
+		uint32	resourceSize;
 		uint32  unknownFlag <format=hex>;
 		uint32	unknownUInt32_1;
 		ushort	unknownShort0;
