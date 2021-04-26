@@ -125,6 +125,6 @@ struct {
 
 	struct {
 
-	} vertices[header.unknownCount4];
+	} resourceDataStartsHere;
 
 } tpGxMeshHead;
