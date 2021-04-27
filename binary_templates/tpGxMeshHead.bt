@@ -74,7 +74,7 @@ struct {
 		uint32  unknownUInt32_4;
 		uint32  unknownUInt32_5;
 		uint32  unknownUInt32_6;
-		uint32  unknownACount;
+		uint32  groupDataCount;
 		local uint32 groupDataStartOffset = FTell();
 		uint32  offsetToGroupData;
 		
@@ -87,7 +87,7 @@ struct {
 			uint32  unknownUInt32_3;
 			byte	unknownIndex <comment="">;
 			FSeek(((FTell() / 8) + 1) * 8);
-		} groupData[unknownACount] <optimize=false>;
+		} groupData[groupDataCount] <optimize=false>;
 
 		FSeek(returnPos);
 		FSeek(((FTell() / 8) + 1) * 8);
