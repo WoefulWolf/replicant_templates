@@ -25,15 +25,15 @@ struct {
 		uint32 	boneDataCount;
 		local uint32 bonesDataStartOffset = FTell();
 		uint32	offsetToBonesData;
-		uint32 	unknownCount2;
-		local uint32 unknown2StartOffset = FTell();
-		uint32	offsetToUnknown2;
-		uint32 	materialCount;
-		local uint32 materialsStartOffset = FTell();
-		uint32	offsetToMaterials;
 		uint32 	objectGroupCount;
 		local uint32 objectGroupsStartOffset = FTell();
 		uint32	offsetToObjectGroups;
+		uint32 	materialCount;
+		local uint32 materialsStartOffset = FTell();
+		uint32	offsetToMaterials;
+		uint32 	objectCount;
+		local uint32 objectsStartOffset = FTell();
+		uint32	offsetToObjects;
 	} header;
 
 	FSeek( header.bonesStartOffset + header.offsetToBones );
@@ -64,24 +64,22 @@ struct {
 	} boneData[header.boneDataCount] <optimize=false>;
 	} bonesData;
 
-	FSeek( header.unknown2StartOffset + header.offsetToUnknown2 );
+	FSeek( header.objectGroupsStartOffset + header.offsetToObjectGroups );
 	struct {
-		struct {
-			uint32  unknownUInt32_0;
-			uint32  unknownUInt32_1;
-			uint32  unknownUInt32_2;
-			uint32  unknownUInt32_3;
-			uint32  unknownUInt32_4 <comment="Sometimes matches total unknownDataSize if only 1 objectGroup">;
-			uint32  unknownUInt32_5;
-			uint32  unknownUInt32_6;
-			uint32  unknownACount;
-			local uint32 unknownAStartOffset = FTell();
-			uint32  offsetToUnknownA;
-		} unknown2Head;
-
-		FSeek( unknown2Head.unknownAStartOffset + unknown2Head.offsetToUnknownA );
-
 	struct {
+		uint32  unknownUInt32_0;
+		uint32  unknownUInt32_1;
+		uint32  unknownUInt32_2;
+		uint32  unknownUInt32_3;
+		uint32  unknownUInt32_4;
+		uint32  unknownUInt32_5;
+		uint32  unknownUInt32_6;
+		uint32  unknownACount;
+		local uint32 groupDataStartOffset = FTell();
+		uint32  offsetToGroupData;
+		
+		local uint32 returnPos = FTell();
+		FSeek(groupDataStartOffset + offsetToGroupData);
 		struct {
 			uint32  unknownUInt32_0;
 			uint32  unknownUInt32_1;
@@ -89,10 +87,12 @@ struct {
 			uint32  unknownUInt32_3;
 			byte	unknownIndex <comment="">;
 			FSeek(((FTell() / 8) + 1) * 8);
-		} unknownA[unknown2Head.unknownACount] <optimize=false>;
+		} groupData[unknownACount] <optimize=false>;
+
+		FSeek(returnPos);
 		FSeek(((FTell() / 8) + 1) * 8);
-	} unknownA[header.unknownCount2] <optimize=false>;
-	} unknown2; 
+	} objectGroup[header.objectGroupCount] <optimize=false>;
+	} objectGroups;
 
 	FSeek( header.materialsStartOffset + header.offsetToMaterials );
 	struct {
@@ -111,7 +111,7 @@ struct {
 	} material[header.materialCount] <optimize=false>;
 	} materials;
 
-	FSeek( header.objectGroupsStartOffset + header.offsetToObjectGroups );
+	FSeek( header.objectsStartOffset + header.offsetToObjects );
 	struct {
 	struct {
 		uint32 objectGroupIndex;
@@ -128,13 +128,13 @@ struct {
 			float y;
 			float z;
 		} boundingBoxCoord2;
-	} objectGroup[header.objectGroupCount] <optimize=false>;
-	} objectGroups;
+	} object[header.objectCount] <optimize=false>;
+	} objects;
 
 	struct {
 		float x;
 		float y;
 		float z;
-	} test_vertices[objectGroups.objectGroup[0].unknownDataSize/12];
+	} test_vertices[objects.object[0].unknownDataSize/12];
 
 } tpGxMeshHead;
