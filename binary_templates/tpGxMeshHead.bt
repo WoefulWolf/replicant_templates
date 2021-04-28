@@ -12,9 +12,9 @@ struct {
 			float y;
 			float z;
 		} boundingBoxCoord2;
-		uint32	meshResourceSize;
+		uint32	totalVertexDataSize;
 		uint32  unknownFlag <format=hex>;
-		uint32	unknownSize;
+		uint32	totalIndicesDataSize;
 		ushort	unknownShort0;
 		ushort	unknownShort1;
 		float unknownFloat;
@@ -72,15 +72,15 @@ struct {
 		uint32  unknownUInt32_1;
 		uint32  unknownUInt32_2;
 		uint32  vertexCount;
-		uint32  unknownUInt32_4;
+		uint32  indicesCount;
 		uint32  unknownUInt32_5;
 		uint32  unknownUInt32_6;
-		uint32  groupDataCount;
-		local uint32 groupDataStartOffset = FTell();
-		uint32  offsetToGroupData;
+		uint32  vertexDataCount;
+		local uint32 vertexDataStartOffset = FTell();
+		uint32  offsetToVertexData;
 		
 		local uint32 returnPos = FTell();
-		FSeek(groupDataStartOffset + offsetToGroupData);
+		FSeek(vertexDataStartOffset + offsetToVertexData);
 		struct {
 			uint32  assetResourceOffset;
 			uint32  unknownUInt32_1;
@@ -88,7 +88,7 @@ struct {
 			uint32  unknownStructSize;
 			byte	unknownIndex <comment="">;
 			FSeek(((FTell() / 8) + 1) * 8);
-		} groupData[groupDataCount] <optimize=false>;
+		} vertexData[vertexDataCount] <optimize=false>;
 
 		FSeek(returnPos);
 		FSeek(((FTell() / 8) + 1) * 8);
@@ -118,7 +118,7 @@ struct {
 		uint32 objectGroupIndex;
 		uint32 materialIndex;
 		uint32 unknownStartIndex;
-		uint32 unknownSize;
+		uint32 indicesCount;
 		struct {
 			float x;
 			float y;
@@ -137,25 +137,30 @@ struct {
 	local int k;
 	for (i = 0; i < header.objectGroupCount; i++) {
 		struct {
-			for (k = 0; k < objectGroups.objectGroup[i].groupDataCount; k++) {
-				FSeek(assetResourceStart + objectGroups.objectGroup[i].groupData[k].assetResourceOffset);
+			for (k = 0; k < objectGroups.objectGroup[i].vertexDataCount; k++) {
+				FSeek(assetResourceStart + objectGroups.objectGroup[i].vertexData[k].assetResourceOffset);
 				struct {
-					if (objectGroups.objectGroup[i].groupData[k].unknownStructSize == 12) {
+					if (objectGroups.objectGroup[i].vertexData[k].unknownStructSize == 12) {
 						struct {
 							float x;
 							float y;
 							float z;
 						} unknownStruct[objectGroups.objectGroup[i].vertexCount];
 					}
-					if (objectGroups.objectGroup[i].groupData[k].unknownStructSize == 4) {
+					if (objectGroups.objectGroup[i].vertexData[k].unknownStructSize == 4) {
 						struct {
 							ubyte unknownBytes[4];
 						} unknownStruct[objectGroups.objectGroup[i].vertexCount];
 					}
 
-				} groupData;
+				} vertexData;
 			}
-		} objectGroupAssetData;
+		} objectGroupVertexData;
 	}
+	
+	FSeek(((FTell() / 80) + 1) * 80);
+	struct {
+
+	} objectGroupIndices;
 
 } tpGxMeshHead;
