@@ -73,7 +73,9 @@ struct {
         uint32  Unknown0;
         local uint32 returnPos = FTell();
         FSeek(nameStartOffset + offsetToName);
-        string name;        
+        string name;  
+        FSeek(contentStartOffset + offsetToContentStart); 
+        //#include "BXON.bt"
         FSeek(returnPos);
     } file[header.fileCount] <optimize=false>;
 } files;
