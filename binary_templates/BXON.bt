@@ -8,11 +8,11 @@ struct {
     local uint32 assetTypeNameStartOffset = FTell();
     uint32  offsetToAssetTypeName;
     local uint32 assetDataStartOffset = FTell();
-    uint32  offsetToAssetData;
+    uint32  offsetToAssetTypeData;
     FSeek(assetTypeNameStartOffset + offsetToAssetTypeName);
     string AssetTypeName;
 
-    FSeek(assetDataStartOffset + offsetToAssetData);
+    FSeek(assetDataStartOffset + offsetToAssetTypeData);
     if (AssetTypeName == "tpXonAssetHeader") {
         // #include "tpXonAssetHeader.bt"
     } else if (AssetTypeName == "tpGxMeshHead") {
