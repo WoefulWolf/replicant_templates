@@ -73,7 +73,7 @@ typedef struct {
 		uint32  unknownUInt32_2;
 		uint32  vertexCount;
 		uint32  indicesCount;
-		uint32  unknownUInt32_5;
+		uint32  indicesStructSize;
 		uint32  unknownUInt32_6;
 		uint32  vertexDataCount;
 		local uint32 vertexDataStartOffset = FTell();

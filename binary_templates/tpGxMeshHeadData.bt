@@ -65,16 +65,24 @@ struct tpGxMeshHeadData(tpGxMeshHead &meshHead) {
 		} objectGroupVertexData(meshHead) <optimize=false>;
 	}
 
-	alignRelative(assetResourceStart, 256);
+	if ((FTell() - assetResourceStart) % 256 != 0) alignRelative(assetResourceStart, 256);
 
 	for (i = 0; i < meshHead.header.objectGroupCount; i++) {
 		struct (tpGxMeshHead &meshHead){
 			for (k = 0; k < meshHead.objectGroups.objectGroup[i].indicesCount/3; k++) {
-				struct {
-					ushort v0;
-					ushort v1;
-					ushort v2;
-				} loop;
+				if (meshHead.objectGroups.objectGroup[i].indicesStructSize == 2) {
+					struct {
+						ushort v0;
+						ushort v1;
+						ushort v2;
+					} loop;
+				} else if (meshHead.objectGroups.objectGroup[i].indicesStructSize == 4) {
+					struct {
+						uint32 v0;
+						uint32 v1;
+						uint32 v2;
+					} loop;
+				}
 			}
 			alignRelative(0, 4);
 		} objectGroupIndices(meshHead) <optimize=false>;
