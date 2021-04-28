@@ -1,0 +1,21 @@
+// Woeful_Wolf
+
+struct {
+	char	id[4];
+	string	name;
+	alignRelative(0, 8);
+	uint32	unknownUInt32_0;
+	uint32	unknownUInt32_1;
+	uint32	unknownUInt32_2;
+	uint32	unknownUInt32_3;
+	uint32	unknownUInt32_4;
+	uint32	unknownUInt32_5;
+	uint32	unknownUInt32_6;
+	uint32	unknownUInt32_7;
+	uint32	unknownUInt32_8;
+	uint32	unknownUInt32_9;
+	uint32	unknownUInt32_10;
+	uint32	unknownUInt32_11;
+	uint32	unknownUInt32_12;
+	float	unknownFloat0;
+} content;

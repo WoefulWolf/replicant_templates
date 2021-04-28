@@ -1,0 +1,83 @@
+// Woeful_Wolf
+
+struct tpGxMeshHeadData(tpGxMeshHead &meshHead) {
+	local uint32 assetResourceStart = FTell();
+	local int i;
+	local int k;
+
+	for (i = 0; i < meshHead.header.objectGroupCount; i++) {
+		struct (tpGxMeshHead &meshHead) {
+			for (k = 0; k < meshHead.objectGroups.objectGroup[i].vertexDataCount; k++) {
+				FSeek(assetResourceStart + meshHead.objectGroups.objectGroup[i].vertexData[k].objectGroupVertexDataOffset);
+				struct (tpGxMeshHead &meshHead){
+					if (meshHead.objectGroups.objectGroup[i].vertexData[k].vertexStructSize == 12) {
+						if (meshHead.objectGroups.objectGroup[i].vertexData[k].vertexStructFlag == 0) {
+							struct {
+								float x;
+								float y;
+								float z;
+							} vertexPos[meshHead.objectGroups.objectGroup[i].vertexCount];
+						} else if (meshHead.objectGroups.objectGroup[i].vertexData[k].vertexStructFlag == 6) {
+							struct {
+								float boneWeight0;
+								float boneWeight1;
+								float boneWeight2;
+							} vertexWeights[meshHead.objectGroups.objectGroup[i].vertexCount];
+						} else {
+							struct {
+								float unknownFloats[3];
+							} unknownStruct[meshHead.objectGroups.objectGroup[i].vertexCount];
+						}
+					} else if (meshHead.objectGroups.objectGroup[i].vertexData[k].vertexStructSize == 4) {
+						if (meshHead.objectGroups.objectGroup[i].vertexData[k].vertexStructFlag == 1) {
+							struct {
+								ubyte nx;
+								ubyte ny;
+								ubyte nz;
+								ubyte dummy;
+							} vertexNormal[meshHead.objectGroups.objectGroup[i].vertexCount];
+						} else if (meshHead.objectGroups.objectGroup[i].vertexData[k].vertexStructFlag == 2) {
+							struct {
+								ubyte unknownBytes[4];
+							} unknownStruct[meshHead.objectGroups.objectGroup[i].vertexCount] <comment="Perhaps Tangents?">;
+						} else if (meshHead.objectGroups.objectGroup[i].vertexData[k].vertexStructFlag == 4) {
+							struct {
+								hfloat u;
+								hfloat v;
+							} vertexUV[meshHead.objectGroups.objectGroup[i].vertexCount];
+						} else if (meshHead.objectGroups.objectGroup[i].vertexData[k].vertexStructFlag == 5) {
+							struct {
+								ubyte boneIndex0;
+								ubyte boneIndex1;
+								ubyte boneIndex2;
+								ubyte boneIndex3;
+							} vertexBones[meshHead.objectGroups.objectGroup[i].vertexCount];
+						} else {
+							struct {
+								ubyte unknownBytes[4];
+							} unknownStruct[meshHead.objectGroups.objectGroup[i].vertexCount];
+						}
+					}
+
+				} vertexData(meshHead) <optimize=false>;
+			}
+			alignRelative(0, 4);
+		} objectGroupVertexData(meshHead) <optimize=false>;
+	}
+
+	alignRelative(assetResourceStart, 256);
+
+	for (i = 0; i < meshHead.header.objectGroupCount; i++) {
+		struct (tpGxMeshHead &meshHead){
+			for (k = 0; k < meshHead.objectGroups.objectGroup[i].indicesCount/3; k++) {
+				struct {
+					ushort v0;
+					ushort v1;
+					ushort v2;
+				} loop;
+			}
+			alignRelative(0, 4);
+		} objectGroupIndices(meshHead) <optimize=false>;
+	}
+
+};

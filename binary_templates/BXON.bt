@@ -16,6 +16,6 @@ struct {
     if (AssetTypeName == "tpXonAssetHeader") {
         // #include "tpXonAssetHeader.bt"
     } else if (AssetTypeName == "tpGxMeshHead") {
-        #include "tpGxMeshHead.bt"
+        tpGxMeshHead meshHead;
     }
 } content;

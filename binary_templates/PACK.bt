@@ -1,11 +1,13 @@
 // Woeful_Wolf
 // Yretenai
 
-struct fileResourceData (int arraySize)
-{
-    int id;
-    int array[arraySize];
-};
+void alignRelative(int relativeStart, int alignment) {
+    local uint32 alignOffset =  (((FTell() - relativeStart) / alignment) + 1) * alignment;
+    FSeek(relativeStart + alignOffset);
+}
+
+#include "tpGxMeshHead.bt"
+#include "tpGxMeshHeadData.bt"
 
 struct {
     char    id[4];
@@ -25,58 +27,76 @@ struct {
 } header;
 
 if (header.pathCount != 0) {
-FSeek( header.pathsStartOffset + header.offsetToPaths );
-struct{
-    struct {
-        uint32  hash<format=hex>;
-        local uint32 pathStartOffset = FTell();
-        uint32  offsetToPath;
-        uint32  unknown0;
-        local uint returnPos = FTell();
-        FSeek(pathStartOffset + offsetToPath);
-        string path;
-        FSeek(returnPos);
-    } path[header.pathCount] <optimize=false>;
-} paths;
+    FSeek( header.pathsStartOffset + header.offsetToPaths );
+    struct{
+        struct {
+            uint32  hash<format=hex>;
+            local uint32 pathStartOffset = FTell();
+            uint32  offsetToPath;
+            uint32  unknown0;
+            local uint returnPos = FTell();
+            FSeek(pathStartOffset + offsetToPath);
+            string path;
+            FSeek(returnPos);
+        } path[header.pathCount] <optimize=false>;
+    } paths;
 }
 
 if (header.assetPackCount != 0) {
-FSeek( header.assetPacksStartOffset + header.offsetToAssetPacks );
-struct {
+    FSeek( header.assetPacksStartOffset + header.offsetToAssetPacks );
     struct {
-        uint32  hash<format=hex>;
-        local uint32 nameStartOffset = FTell();
-        uint32  offsetToName;
-        uint32  fileSize;
-        local uint32 contentStartOffset = FTell();
-        uint32  offsetToContentStart;
-        uint32  offsetToContentEnd;
-        FSeek(nameStartOffset + offsetToName);
-        string name;
-        
-        FSeek( contentStartOffset + offsetToContentStart );
-        #include "BXON.bt"
-    } assetPack[header.assetPackCount] <optimize=false>;
-} assetPacks;
+        struct {
+            uint32  hash<format=hex>;
+            local uint32 nameStartOffset = FTell();
+            uint32  offsetToName;
+            uint32  fileSize;
+            local uint32 contentStartOffset = FTell();
+            uint32  offsetToContentStart;
+            uint32  offsetToContentEnd;
+            FSeek(nameStartOffset + offsetToName);
+            string name;
+            
+            FSeek( contentStartOffset + offsetToContentStart );
+            #include "BXON.bt"
+        } assetPack[header.assetPackCount] <optimize=false>;
+    } assetPacks;
 }
 
 if (header.fileCount != 0) {
-FSeek( header.filesStartOffset + header.offsetToFiles );
-struct {
+    FSeek( header.filesStartOffset + header.offsetToFiles );
     struct {
-        uint32  hash<format=hex>;
-        local uint32 nameStartOffset = FTell();
-        uint32  offsetToName;
-        uint32  fileSize;
-        local uint32 contentStartOffset = FTell();
-        uint32  offsetToContentStart;
-        uint32  Unknown0;
-        local uint32 returnPos = FTell();
-        FSeek(nameStartOffset + offsetToName);
-        string name;  
-        FSeek(contentStartOffset + offsetToContentStart); 
-        //#include "BXON.bt"
-        FSeek(returnPos);
-    } file[header.fileCount] <optimize=false>;
-} files;
+        struct {
+            uint32  hash<format=hex>;
+            local uint32 nameStartOffset = FTell();
+            uint32  offsetToName;
+            uint32  fileSize;
+            local uint32 contentStartOffset = FTell();
+            uint32  offsetToContentStart;
+            uint32  Unknown0;
+            local uint32 returnPos = FTell();
+            FSeek(nameStartOffset + offsetToName);
+            string name;  
+            FSeek(contentStartOffset + offsetToContentStart);
+            char id[4];
+            FSkip(-4);
+            if (id == "BXON") {
+                #include "BXON.bt"
+            } else if (id == "CJF") {
+                #include "CJF.bt"
+            }
+
+            FSeek(returnPos);
+        } file[header.fileCount] <optimize=false>;
+    } files;
+
+    FSeek(header.packFileSerializedSize);
+    local int i;
+    for (i = 0; i < header.fileCount; i++) {
+        if (files.file[i].id != "BXON") continue;
+        if (files.file[i].content.AssetTypeName != "tpGxMeshHead") continue; 
+        struct {
+            tpGxMeshHeadData meshData(files.file[i].content.meshHead);
+            if ((FTell() - header.packFileSerializedSize) % 32 != 0) alignRelative(header.packFileSerializedSize, 32);
+        } assetsData <optimize=false>;
+    }   
 }
