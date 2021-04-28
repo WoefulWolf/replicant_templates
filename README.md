@@ -7,25 +7,42 @@
 * Usually contain PACK files (which store more files) or BXON files.
 
 ## PACK Files
-* Hex Signature: `50 41 43 4B` (Same as Quake Archive File, but could just a coincidence be due to `PACK` text lol).
+* Hex Signature: `50 41 43 4B`.
 * Can contain one or multiple BXON files.
-* Organizes contained files in a directory structure with filenames.
+* Organizes contained files by header structures, and then all asset data at end.
 * TODO
 
 ## BXON Files
+| Type | Description | Offset | Size | Comments |
+| --- | --- | --- | --- | --- |
+| char[4] | id | 0x0 | 0x4 | `BXON` |
+| uint32 | version | 0x4 | 0x4 | Replicant uses `3` |
+| n/a | projectID | 0x8 | 0x4 | Format Unknown |
+| uint32 | offsetToAssetTypeName | 0xC | 0x4 | AssetTypeNames have variable length |
+| uint32 | offsetToAssetTypeData | 0x10 | 0x4 |  |
+
 * Hex Signature: `42 58 4F 4E`
-* Contains game assets.
+* Contains game asset headers.
 * Some common labels include:
 	* tpXonAssetHeader
 	* tpGxMeshHead
 	* tpGxTexHead
 * TODO
 
+## tpGxMeshHead
+* Contains all things mesh geometry!
+* Due to weird padding I haven't sorted out, can't give total size of asset data atm.
+* A lot more that is too much to put here, check out the binary template.
 <br>
 
 # Scripts
 
 ## decompress_archive.py
+
+#### Note:
+* Not really recommended at the moment, ignores structure and just tries to decompress anything it can.
+* Recommended instead: https://github.com/yretenai/kaine
+
 #### Requires:
 * [Python 3](https://www.python.org/)
 * [zstandard](https://pypi.org/project/zstandard/) 
