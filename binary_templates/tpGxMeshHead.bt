@@ -17,8 +17,7 @@ struct {
 		uint32	unknownSize;
 		ushort	unknownShort0;
 		ushort	unknownShort1;
-		ushort	unknownShort2;
-		ushort	unknownShort3;
+		float unknownFloat;
 		uint32	boneCount;
 		local uint32 bonesStartOffset = FTell();
 		uint32	offsetToBones;
@@ -59,8 +58,10 @@ struct {
 		FSeek(nameStartOffset + offsetToName);
 		string name;
 		FSeek(returnPos);
-		int32	unknownInt32;
-		float   unknownFloat[33];
+		int32	unknownParentIndex;
+		float	unknownFloat;
+		float   unknownMatrix0[16];
+		float   unknownMatrix1[16];
 	} boneData[header.boneDataCount] <optimize=false>;
 	} bonesData;
 
@@ -70,7 +71,7 @@ struct {
 		uint32  unknownUInt32_0;
 		uint32  unknownUInt32_1;
 		uint32  unknownUInt32_2;
-		uint32  unknownUInt32_3;
+		uint32  vertexCount;
 		uint32  unknownUInt32_4;
 		uint32  unknownUInt32_5;
 		uint32  unknownUInt32_6;
@@ -81,10 +82,10 @@ struct {
 		local uint32 returnPos = FTell();
 		FSeek(groupDataStartOffset + offsetToGroupData);
 		struct {
-			uint32  unknownUInt32_0;
+			uint32  assetResourceOffset;
 			uint32  unknownUInt32_1;
 			uint32  unknownUInt32_2;
-			uint32  unknownUInt32_3;
+			uint32  unknownStructSize;
 			byte	unknownIndex <comment="">;
 			FSeek(((FTell() / 8) + 1) * 8);
 		} groupData[groupDataCount] <optimize=false>;
@@ -116,8 +117,8 @@ struct {
 	struct {
 		uint32 objectGroupIndex;
 		uint32 materialIndex;
-		uint32 unknownDataStartOffset;
-		uint32 unknownDataSize;
+		uint32 unknownStartIndex;
+		uint32 unknownSize;
 		struct {
 			float x;
 			float y;
@@ -131,10 +132,30 @@ struct {
 	} object[header.objectCount] <optimize=false>;
 	} objects;
 
-	struct {
-		float x;
-		float y;
-		float z;
-	} test_vertices[objects.object[0].unknownDataSize/12];
+	local uint32 assetResourceStart = FTell();
+	local int i;
+	local int k;
+	for (i = 0; i < header.objectGroupCount; i++) {
+		struct {
+			for (k = 0; k < objectGroups.objectGroup[i].groupDataCount; k++) {
+				FSeek(assetResourceStart + objectGroups.objectGroup[i].groupData[k].assetResourceOffset);
+				struct {
+					if (objectGroups.objectGroup[i].groupData[k].unknownStructSize == 12) {
+						struct {
+							float x;
+							float y;
+							float z;
+						} unknownStruct[objectGroups.objectGroup[i].vertexCount];
+					}
+					if (objectGroups.objectGroup[i].groupData[k].unknownStructSize == 4) {
+						struct {
+							ubyte unknownBytes[4];
+						} unknownStruct[objectGroups.objectGroup[i].vertexCount];
+					}
+
+				} groupData;
+			}
+		} objectGroupAssetData;
+	}
 
 } tpGxMeshHead;
