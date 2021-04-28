@@ -82,7 +82,7 @@ struct {
 		local uint32 returnPos = FTell();
 		FSeek(vertexDataStartOffset + offsetToVertexData);
 		struct {
-			uint32  assetResourceOffset;
+			uint32  objectGroupVertexDataOffset;
 			uint32  unknownUInt32_1;
 			uint32  unknownUInt32_2;
 			uint32  unknownStructSize;
@@ -138,7 +138,7 @@ struct {
 	for (i = 0; i < header.objectGroupCount; i++) {
 		struct {
 			for (k = 0; k < objectGroups.objectGroup[i].vertexDataCount; k++) {
-				FSeek(assetResourceStart + objectGroups.objectGroup[i].vertexData[k].assetResourceOffset);
+				FSeek(assetResourceStart + objectGroups.objectGroup[i].vertexData[k].objectGroupVertexDataOffset);
 				struct {
 					if (objectGroups.objectGroup[i].vertexData[k].unknownStructSize == 12) {
 						struct {
@@ -158,7 +158,7 @@ struct {
 		} objectGroupVertexData;
 	}
 	
-	FSeek(((FTell() / 80) + 1) * 80);
+	FSeek(((FTell() / 128) + 1) * 128);
 	struct {
 
 	} objectGroupIndices;
