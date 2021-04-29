@@ -31,7 +31,6 @@
 
 ## tpGxMeshHead
 * Contains all things mesh geometry!
-* Due to weird padding I haven't sorted out, can't give total size of asset data atm.
 * A lot more that is too much to put here, check out the binary template.
 <br>
 
