@@ -2,7 +2,7 @@
 // Yretenai
 
 void alignRelative(int relativeStart, int alignment) {
-    local uint32 alignOffset =  (((FTell() - relativeStart) / alignment) + 1) * alignment;
+    local uint32 alignOffset = (((FTell() - relativeStart) / alignment) + 1) * alignment;
     FSeek(relativeStart + alignOffset);
 }
 

@@ -28,6 +28,19 @@ struct tpGxMeshHeadData(tpGxMeshHead &meshHead) {
 								float unknownFloats[3];
 							} unknownStruct[meshHead.objectGroups.objectGroup[i].vertexCount];
 						}
+						
+					} else if (meshHead.objectGroups.objectGroup[i].vertexData[k].vertexStructSize == 8) {
+						if (meshHead.objectGroups.objectGroup[i].vertexData[k].vertexStructFlag == 6) {
+							struct {
+								float boneWeight0;
+								float boneWeight1;
+							} vertexWeights[meshHead.objectGroups.objectGroup[i].vertexCount];
+						} else {
+							struct {
+								float unknownFloats[2];
+							} unknownStruct[meshHead.objectGroups.objectGroup[i].vertexCount];
+						}
+
 					} else if (meshHead.objectGroups.objectGroup[i].vertexData[k].vertexStructSize == 4) {
 						if (meshHead.objectGroups.objectGroup[i].vertexData[k].vertexStructFlag == 1) {
 							struct {
