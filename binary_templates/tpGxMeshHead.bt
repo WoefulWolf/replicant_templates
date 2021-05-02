@@ -45,7 +45,22 @@ typedef struct {
 		string name;
 		FSeek(returnPos);
 		int32	parentBoneIndex;
-		float   unknownFloats[10];
+		struct {
+			float x;
+			float y;
+			float z;
+			float w;
+		} quaternionRotation;
+		struct {
+			float x;
+			float y;
+			float z;
+		} scale;
+		struct {
+			float x;
+			float y;
+			float z;
+		} localPosition;
 	} bone[header.boneCount] <optimize=false>;
 	} bones;
 
@@ -59,7 +74,7 @@ typedef struct {
 		string name;
 		FSeek(returnPos);
 		int32	unknownParentIndex;
-		float	unknownFloat;
+		float	length;
 		float   unknownMatrix0[16];
 		float   unknownMatrix1[16];
 	} boneData[header.boneDataCount] <optimize=false>;

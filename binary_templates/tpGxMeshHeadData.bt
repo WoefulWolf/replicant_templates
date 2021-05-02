@@ -44,15 +44,18 @@ struct tpGxMeshHeadData(tpGxMeshHead &meshHead) {
 					} else if (meshHead.objectGroups.objectGroup[i].vertexData[k].vertexStructSize == 4) {
 						if (meshHead.objectGroups.objectGroup[i].vertexData[k].vertexStructFlag == 1) {
 							struct {
-								ubyte nx;
-								ubyte ny;
-								ubyte nz;
-								ubyte dummy;
+								byte nx;
+								byte ny;
+								byte nz;
+								byte dummy;
 							} vertexNormal[meshHead.objectGroups.objectGroup[i].vertexCount];
 						} else if (meshHead.objectGroups.objectGroup[i].vertexData[k].vertexStructFlag == 2) {
 							struct {
-								ubyte unknownBytes[4];
-							} unknownStruct[meshHead.objectGroups.objectGroup[i].vertexCount] <comment="Perhaps Tangents?">;
+								byte tx;
+								byte ty;
+								byte tz;
+								byte bi;
+							} vertexTangent[meshHead.objectGroups.objectGroup[i].vertexCount];
 						} else if (meshHead.objectGroups.objectGroup[i].vertexData[k].vertexStructFlag == 4) {
 							struct {
 								hfloat u;
