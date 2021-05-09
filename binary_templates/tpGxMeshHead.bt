@@ -99,7 +99,7 @@ typedef struct {
 		struct {
 			uint32  objectGroupVertexDataOffset;
 			uint32  unknownUInt32_1;
-			uint32  unknownUInt32_2;
+			uint32  vertexStructTypeIndex;
 			uint32  vertexStructSize;
 			byte	vertexStructFlag;
 			alignRelative(0, 8);
