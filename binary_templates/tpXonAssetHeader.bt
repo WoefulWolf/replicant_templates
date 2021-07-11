@@ -11,8 +11,6 @@ typedef struct {
 		FSeek(unknownAssetsStartOffset + offsetToUnknownAssets);
 		if (numUnknownAssets != 0) {
 			struct {
-				FSeek(unknownStartOffset0 + unknownOffsetTo0);
-
 				local uint32 unknownIDStartOffset = FTell();
 				uint32 offsetToUnknownID;
 
