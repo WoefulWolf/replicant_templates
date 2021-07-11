@@ -1,0 +1,37 @@
+// Woeful_Wolf
+// Yretenai
+
+typedef struct {
+	struct {
+		uint32 texWidth;
+		uint32 texHeight;
+
+		uint32 surfaces;
+		uint32 unknownInt0;
+
+		uint32 texSize;
+
+		uint32 unknownInt1;
+		uint32 XonSurfaceFormat <format=hex>;
+
+		uint32 numMipSurfaces;
+		local uint32 mipSurfaceStartOffset = FTell();
+		uint32 offsetToMipSurface;
+	} header;
+
+	FSeek( header.mipSurfaceStartOffset + header.offsetToMipSurface );
+	struct {
+		uint32 offset;
+        uint32 unknown_1;
+        uint32 unknown_2;
+        uint32 unknown_3;
+        uint32 size;
+        uint32 unknown_5;
+        uint32 width;
+        uint32 height;
+        uint32 unknown_8;
+        uint32 unknown_9;
+	} mipSurface[header.numMipSurfaces];
+} tpGxTexHead;
+
+// 20096

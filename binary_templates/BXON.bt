@@ -14,8 +14,10 @@ struct {
 
     FSeek(assetDataStartOffset + offsetToAssetTypeData);
     if (AssetTypeName == "tpXonAssetHeader") {
-        // #include "tpXonAssetHeader.bt"
+        tpGxAssetHeader assetHeader;
     } else if (AssetTypeName == "tpGxMeshHead") {
         tpGxMeshHead meshHead;
+    } else if (AssetTypeName == "tpGxTexHead") {
+    	tpGxTexHead texHead;
     }
 } content;

@@ -1,0 +1,6 @@
+// Woeful_Wolf
+
+struct tpGxTexHeadData(tpGxTexHead &texHead) {
+	local uint32 assetResourceStart = FTell();
+	FSeek(assetResourceStart + texHead.header.texSize);
+};
