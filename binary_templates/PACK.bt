@@ -94,18 +94,20 @@ if (header.fileCount != 0) {
         } file[header.fileCount] <optimize=false>;
     } files;
 
-    FSeek(header.packFileSerializedSize);
-    local int i;
-    for (i = 0; i < header.fileCount; i++) {
-        if (files.file[i].id != "BXON") continue;
-        //if (files.file[i].content.AssetTypeName != "tpGxMeshHead") continue; 
-        struct {
-        	if (files.file[i].content.AssetTypeName == "tpGxMeshHead") {
-	            tpGxMeshHeadData meshData(files.file[i].content.meshHead);
-	        } else if (files.file[i].content.AssetTypeName == "tpGxTexHead") {
-	        	tpGxTexHeadData texData(files.file[i].content.texHead);
-	        }
-	        if ((FTell() - header.packFileSerializedSize) % 32 != 0) alignRelative(header.packFileSerializedSize, 32);
-        } assetsData <optimize=false>;
+    if (header.packFileResourceSize != 0) {
+	    FSeek(header.packFileSerializedSize);
+	    local int i;
+	    for (i = 0; i < header.fileCount; i++) {
+	        if (files.file[i].id != "BXON") continue;
+	        //if (files.file[i].content.AssetTypeName != "tpGxMeshHead") continue; 
+	        struct {
+	        	if (files.file[i].content.AssetTypeName == "tpGxMeshHead") {
+		            tpGxMeshHeadData meshData(files.file[i].content.meshHead);
+		        } else if (files.file[i].content.AssetTypeName == "tpGxTexHead") {
+		        	tpGxTexHeadData texData(files.file[i].content.texHead);
+		        }
+		        if ((FTell() - header.packFileSerializedSize) % 32 != 0) alignRelative(header.packFileSerializedSize, 32);
+	        } assetsData <optimize=false>;
+	    }
     }   
 }
