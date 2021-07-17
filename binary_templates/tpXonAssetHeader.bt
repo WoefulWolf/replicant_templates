@@ -7,17 +7,47 @@ typedef struct {
 		uint32 numUnknownPaths;
 		local uint32 unknownPathsStartOffset = FTell();
 		uint32 offsetToUnknownPaths;
+	} header;
 
-		FSeek(unknownAssetsStartOffset + offsetToUnknownAssets);
-		if (numUnknownAssets != 0) {
+	FSeek(header.unknownAssetsStartOffset + header.offsetToUnknownAssets);
+	if (header.numUnknownAssets != 0) {
+		struct {
+			local uint32 unknownIDStartOffset = FTell();
+			uint32 offsetToUnknownID;
+
+			FSeek(unknownIDStartOffset + offsetToUnknownID);
+
+			uint32 unknownID <format=hex>;
+			uint32 unknownThing1;
+
+			if (unknownThing1 == 0) return;
+
+			local uint32 stringStartOffset = FTell();
+			uint32 offsetToString;
+			local uint32 returnPos = FTell();
+
+			FSeek(stringStartOffset + offsetToString);
+			string unknownString;
+			FSeek(returnPos);
+
+			uint32 unknown2Count;
+			local uint32 unknown2StartOffset = FTell();
+			uint32 offsetToUnknown2;
+
+			uint32 numTextures;
+			local uint32 texturesStartOffset = FTell();
+			uint32 offsetToTextures;
+
+			uint32 numUnknownTPVars;
+			local uint32 unknownTPVarsStartOffset = FTell();
+			uint32 offsetToUnknownTPVars;
+
+			uint32 unknownUInt32s[2];
+			short unknownShort;
+
+			FSeek(unknown2StartOffset + offsetToUnknown2);
 			struct {
-				local uint32 unknownIDStartOffset = FTell();
-				uint32 offsetToUnknownID;
-
-				FSeek(unknownIDStartOffset + offsetToUnknownID);
-
 				uint32 unknownID <format=hex>;
-				uint32 unknownThing1;
 
 				local uint32 stringStartOffset = FTell();
 				uint32 offsetToString;
@@ -27,40 +57,16 @@ typedef struct {
 				string unknownString;
 				FSeek(returnPos);
 
-				uint32 unknown2Count;
-				local uint32 unknown2StartOffset = FTell();
-				uint32 offsetToUnknown2;
+				uint32 unknownUInt32_0;
+				uint32 parameterCount;
+				local uint32 unknown1StartOffset = FTell();
+				uint32 offsetToUnknown1;
+			} materialParameterHeader[unknown2Count] <optimize=false>;
 
-				uint32 numTextures;
-				local uint32 texturesStartOffset = FTell();
-				uint32 offsetToTextures;
-
-				uint32 numUnknownTPVars;
-				local uint32 unknownTPVarsStartOffset = FTell();
-				uint32 offsetToUnknownTPVars;
-
-				uint32 unknownUInt32s[2];
-				short unknownShort;
-
-
-				FSeek(unknown2StartOffset + offsetToUnknown2);
+			local int i;
+			for (i = 0; i < unknown2Count; i++) {
 				struct {
-					uint32 unknownID <format=hex>;
-
-					local uint32 stringStartOffset = FTell();
-					uint32 offsetToString;
-					local uint32 returnPos = FTell();
-
-					FSeek(stringStartOffset + offsetToString);
-					string unknownString;
-					FSeek(returnPos);
-
-					uint32 unknownUInt32_0;
-					uint32 unknown1Count;
-					local uint32 unknown1StartOffset = FTell();
-					uint32 offsetToUnknown1;
-
-					FSeek(unknown1StartOffset + offsetToUnknown1);
+					FSeek(materialParameterHeader[i].unknown1StartOffset + materialParameterHeader[i].offsetToUnknown1);
 					struct {
 						uint32 unknownID <format=hex>;
 						
@@ -79,59 +85,60 @@ typedef struct {
 						uint32 unknownUInt32_5;
 						uint32 unknownUInt32_6;
 						byte unknownByte;
+
 						alignRelative(0, 4);
-					} unknown1[unknown1Count] <optimize=false>;
-				} unknown2[unknown2Count] <optimize=false>;
+					} materialParameter[materialParameterHeader[i].parameterCount] <optimize=false>;
+				} materialParameters;
+			}
 
-				FSeek(texturesStartOffset + offsetToTextures);
+			FSeek(texturesStartOffset + offsetToTextures);
+			struct {
 				struct {
-					struct {
-						uint32 unknownID <format=hex>;
+					uint32 unknownID <format=hex>;
 
-						local uint32 stringStartOffset = FTell();
-						uint32 offsetToString;
-						local uint32 returnPos = FTell();
+					local uint32 stringStartOffset = FTell();
+					uint32 offsetToString;
+					local uint32 returnPos = FTell();
 
-						FSeek(stringStartOffset + offsetToString);
-						string unknownString;
-						FSeek(returnPos);
+					FSeek(stringStartOffset + offsetToString);
+					string unknownString;
+					FSeek(returnPos);
 
-						uint32 unknownID2 <format=hex>;
-						
-						local uint32 stringStart2Offset = FTell();
-						uint32 offsetToString2;
-						local uint32 returnPos2 = FTell();
+					uint32 unknownID2 <format=hex>;
+					
+					local uint32 stringStart2Offset = FTell();
+					uint32 offsetToString2;
+					local uint32 returnPos2 = FTell();
 
-						FSeek(stringStart2Offset + offsetToString2);
-						string unknownString2;
-						FSeek(returnPos2);
+					FSeek(stringStart2Offset + offsetToString2);
+					string unknownString2;
+					FSeek(returnPos2);
 
-						byte unknownByte;
-						alignRelative(0, 4);
-					} texture[numTextures] <optimize=false>;
-				} textures;
+					byte unknownByte;
+					alignRelative(0, 4);
+				} texture[numTextures] <optimize=false>;
+			} textures;
 
-				FSeek(unknownTPVarsStartOffset + offsetToUnknownTPVars);
+			FSeek(unknownTPVarsStartOffset + offsetToUnknownTPVars);
+			struct {
 				struct {
-					struct {
-						uint32 unknownID <format=hex>;
-						
-						local uint32 stringStartOffset = FTell();
-						uint32 offsetToString;
-						local uint32 returnPos = FTell();
+					uint32 unknownID <format=hex>;
+					
+					local uint32 stringStartOffset = FTell();
+					uint32 offsetToString;
+					local uint32 returnPos = FTell();
 
-						FSeek(stringStartOffset + offsetToString);
-						string unknownString;
-						FSeek(returnPos);
+					FSeek(stringStartOffset + offsetToString);
+					string unknownString;
+					FSeek(returnPos);
 
-						uint32 unknownUInt32_1;
-						uint32 unknownUInt32_2;
-						uint32 unknownUInt32_3;
-					} unknownTPVar[numUnknownTPVars] <optimize=false>;
-				} unknownTPVars;
-			} asset[numUnknownAssets] <optimize=false>;
-		}
-	} header;
+					uint32 unknownUInt32_1;
+					uint32 unknownUInt32_2;
+					uint32 unknownUInt32_3;
+				} unknownTPVar[numUnknownTPVars] <optimize=false>;
+			} unknownTPVars;
+		} asset[header.numUnknownAssets] <optimize=false>;
+	}
 
 	if (header.numUnknownPaths != 0) {
 		FSeek(header.unknownPathsStartOffset + header.offsetToUnknownPaths);

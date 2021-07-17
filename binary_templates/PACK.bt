@@ -6,6 +6,13 @@ void alignRelative(int relativeStart, int alignment) {
     FSeek(relativeStart + alignOffset);
 }
 
+void alignRelative2(int relativeStart, int alignment) {
+	local uint32 v = relativeStart % alignment;
+	if (v != 0) {
+		FSeek(relativeStart + alignment - v);
+	}
+}
+
 #include "tpXonAssetHeader.bt"
 
 #include "tpGxMeshHead.bt"
@@ -103,10 +110,11 @@ if (header.fileCount != 0) {
 	        struct {
 	        	if (files.file[i].content.AssetTypeName == "tpGxMeshHead") {
 		            tpGxMeshHeadData meshData(files.file[i].content.meshHead);
+		            if ((FTell() - header.packFileSerializedSize) % 32 != 0) alignRelative(header.packFileSerializedSize, 32);
 		        } else if (files.file[i].content.AssetTypeName == "tpGxTexHead") {
 		        	tpGxTexHeadData texData(files.file[i].content.texHead);
+		        	alignRelative2(FTell(), 64);
 		        }
-		        if ((FTell() - header.packFileSerializedSize) % 32 != 0) alignRelative(header.packFileSerializedSize, 32);
 	        } assetsData <optimize=false>;
 	    }
     }   
