@@ -1,6 +1,6 @@
 # NieR:Replicant ver.1.22474487139 Tools
 
-## Importing Game Models/Materials/Textures
+## Importing Game Models/Materials/Textures to Blender
 https://github.com/WoefulWolf/Replicant2Blender
 
 ## Unpacking Game Archives & Textures
