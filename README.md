@@ -3,6 +3,9 @@
 ## Importing Game Models/Materials/Textures
 https://github.com/WoefulWolf/Replicant2Blender
 
+## Unpacking Game Archives & Textures
+https://github.com/yretenai/kaine/
+
 # Files
 
 ## Archive (.arc) Files
@@ -17,7 +20,7 @@ https://github.com/WoefulWolf/Replicant2Blender
 
 # Scripts
 
-## decompress_archive.py
+## decompress_archive.py (Pointless)
 
 #### Note:
 * Not really recommended at the moment, ignores structure and just tries to decompress anything it can.
