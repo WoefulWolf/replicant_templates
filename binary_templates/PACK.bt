@@ -84,7 +84,7 @@ if (header.fileCount != 0) {
             uint32  fileSize;
             local uint32 contentStartOffset = FTell();
             uint32  offsetToContentStart;
-            uint32  Unknown0;
+            uint32  assetsDataHash <format=hex>;
             local uint32 returnPos = FTell();
             FSeek(nameStartOffset + offsetToName);
             string name;  
@@ -105,8 +105,8 @@ if (header.fileCount != 0) {
 	    FSeek(header.packFileSerializedSize);
 	    local int i;
 	    for (i = 0; i < header.fileCount; i++) {
-	        if (files.file[i].id != "BXON") continue;
-	        //if (files.file[i].content.AssetTypeName != "tpGxMeshHead") continue; 
+	        if (files.file[i].assetsDataHash == 0) continue;
+	        
 	        struct {
 	        	if (files.file[i].content.AssetTypeName == "tpGxMeshHead") {
 		            tpGxMeshHeadData meshData(files.file[i].content.meshHead);
