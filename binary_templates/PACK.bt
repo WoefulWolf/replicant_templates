@@ -95,6 +95,8 @@ if (header.fileCount != 0) {
                 #include "BXON.bt"
             } else if (id == "CJF") {
                 #include "CJF.bt"
+            } else if (id == "KPKy") {
+                #include "KPKy.bt"
             }
 
             FSeek(returnPos);

@@ -1,0 +1,24 @@
+// Woeful_Wolf
+
+struct {
+    local uint32 KPKyStart = FTell();
+    char    id[4];
+    uint32  fileCount;
+    uint32  unknown;
+
+    uint32 fileStartOffset[fileCount] <format=hex>;
+    uint32 fileSize[fileCount];
+
+    uint32 fileNameSize;
+    struct {
+        char fileName[fileNameSize];
+    } fileName[3];
+
+    local int i;
+    for (i = 0; i < fileCount; i++) {
+        FSeek(KPKyStart + fileStartOffset[i]);
+        struct {
+            byte data[fileSize[i]];
+        } file <optimize=false>;
+    }
+} content;
