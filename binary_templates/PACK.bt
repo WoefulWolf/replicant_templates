@@ -21,6 +21,8 @@ void alignRelative2(int relativeStart, int alignment) {
 #include "tpGxTexHead.bt"
 #include "tpGxTexHeadData.bt"
 
+#include "tpTandaFontSdfParam.bt"
+
 struct {
     char    id[4];
     uint32  version;
@@ -95,7 +97,7 @@ if (header.fileCount != 0) {
                 #include "BXON.bt"
             } else if (id == "CJF") {
                 #include "CJF.bt"
-            } else if (id == "KPKy") {
+            } else if (id == "KPK") {
                 #include "KPKy.bt"
             }
 

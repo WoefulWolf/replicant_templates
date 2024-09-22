@@ -1,0 +1,38 @@
+// Woeful_Wolf
+
+typedef struct {
+	struct {
+		local uint32 headerStartOffset = FTell();
+		uint32 offsetToFontName;
+		float unknown_float_0;
+		float unknown_float_1;
+		float unknown_float_2;
+		float unknown_float_3;
+		float unknown_float_4;
+		float unknown_float_5;
+		uint32 glyphCount;
+		local uint32 glyphsStartOffset = FTell();
+		uint32 offsetToGylphs;
+		uint32 unknown_u32_3;
+		uint32 unknown_u32_4;
+	} header;
+
+	FSeek( header.headerStartOffset + header.offsetToFontName );
+	string fontName;
+
+	FSeek( header.glyphsStartOffset + header.offsetToGylphs );
+	struct {
+		wchar_t unicode;
+		short pad;
+		float topLeftX;
+		float topLeftY;
+		float bottomRightX;
+		float bottomRightY;
+		float unknown_float_4;
+		float unknown_float_5;
+		float unknown_float_6;
+		ushort pixelWidth;
+		ushort pixelHeight;
+		float unknown_float_8;
+	} glyph[header.glyphCount];
+} tpTandaFontSdfParam;

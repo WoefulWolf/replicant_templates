@@ -19,5 +19,7 @@ struct {
         tpGxMeshHead meshHead;
     } else if (AssetTypeName == "tpGxTexHead") {
     	tpGxTexHead texHead;
+    } else if (AssetTypeName == "tpTandaFontSdfParam") {
+        tpTandaFontSdfParam tandaFontSdfParam;
     }
 } content;
