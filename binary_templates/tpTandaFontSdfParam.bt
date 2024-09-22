@@ -33,6 +33,8 @@ typedef struct {
 		float unknown_float_6;
 		ushort pixelWidth;
 		ushort pixelHeight;
-		float unknown_float_8;
+		byte unknown_byte_0;
+		byte channel_index;
+		hfloat unknown_hfloat;
 	} glyph[header.glyphCount];
 } tpTandaFontSdfParam;
