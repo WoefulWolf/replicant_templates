@@ -22,6 +22,7 @@ void alignRelative2(int relativeStart, int alignment) {
 #include "tpGxTexHeadData.bt"
 
 #include "tpTandaFontSdfParam.bt"
+#include "tpArchiveFileParam.bt"
 
 struct {
     char    id[4];
@@ -79,14 +80,19 @@ if (header.assetPackCount != 0) {
 if (header.fileCount != 0) {
     FSeek( header.filesStartOffset + header.offsetToFiles );
     struct {
+        struct AssetDataInfo {
+            uint offset   : 31; 
+            uint has_data : 1;  
+        };
         struct {
-            uint32  hash<format=hex>;
+            uint32 nameHash <format=hex>; // FNV-1
             local uint32 nameStartOffset = FTell();
-            uint32  offsetToName;
-            uint32  fileSize;
+            uint32 offsetToName;
+            uint32 fileSize;
             local uint32 contentStartOffset = FTell();
             uint32  offsetToContentStart;
-            uint32  assetsDataHash <format=hex>;
+            AssetDataInfo assetDataInfo;
+   
             local uint32 returnPos = FTell();
             FSeek(nameStartOffset + offsetToName);
             string name;  
@@ -106,20 +112,19 @@ if (header.fileCount != 0) {
     } files;
 
     if (header.packFileResourceSize != 0) {
-	    FSeek(header.packFileSerializedSize);
 	    local int i;
 	    for (i = 0; i < header.fileCount; i++) {
-	        if (files.file[i].assetsDataHash == 0) continue;
-	        
-	        struct {
-	        	if (files.file[i].content.AssetTypeName == "tpGxMeshHead") {
-		            tpGxMeshHeadData meshData(files.file[i].content.meshHead);
-		            if ((FTell() - header.packFileSerializedSize) % 32 != 0) alignRelative(header.packFileSerializedSize, 32);
-		        } else if (files.file[i].content.AssetTypeName == "tpGxTexHead") {
-		        	tpGxTexHeadData texData(files.file[i].content.texHead);
-		        	alignRelative2(FTell(), 64);
-		        }
-	        } assetsData <optimize=false>;
+	        if (files.file[i].assetDataInfo.has_data) {
+                FSeek(header.packFileSerializedSize + files.file[i].assetDataInfo.offset);
+                
+	            struct {
+	        	    if (files.file[i].content.AssetTypeName == "tpGxMeshHead") {
+		                tpGxMeshHeadData meshData(files.file[i].content.meshHead);
+		            } else if (files.file[i].content.AssetTypeName == "tpGxTexHead") {
+		        	    tpGxTexHeadData texData(files.file[i].content.texHead);
+		            }
+	            } assetsData <optimize=false>;
+            }
 	    }
-    }   
-}
+    }
+ }
