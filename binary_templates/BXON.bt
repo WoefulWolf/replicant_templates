@@ -21,5 +21,7 @@ struct {
     	tpGxTexHead texHead;
     } else if (AssetTypeName == "tpTandaFontSdfParam") {
         tpTandaFontSdfParam tandaFontSdfParam;
+    } else if (AssetTypeName == "tpArchiveFileParam") {
+        tpArchiveFileParam archiveFileParam;
     }
 } content;

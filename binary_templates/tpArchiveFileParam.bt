@@ -1,0 +1,58 @@
+typedef enum <ubyte> { 
+    LOAD_PRELOAD_DECOMPRESS = 0, // concatenated PACKs, single ZSTD frame
+    LOAD_STREAM = 1, // one frame per PACK, concatenated. Garantueed to have an open handle
+    LOAD_STREAM_ONDEMAND = 2  //  one frame per PACK, concatenated. Not garantueed to have an open handle
+} ArchiveLoadType;
+
+
+typedef struct {
+    local uint64 filename_offset_field_pos = FTell();
+    uint32 offsetToFilename;
+    uint32 arcOffsetScale;
+    ArchiveLoadType loadType;
+    ubyte  padding[3];
+    if (offsetToFilename != 0) {
+        local int64 save_pos = FTell();
+        FSeek(filename_offset_field_pos + offsetToFilename);
+        string filename;
+        FSeek(save_pos);
+    }
+} ArchiveEntry;
+
+
+typedef struct {
+    uint32 pathHash; // 32-bit FNV-1
+
+    local uint64 name_offset_pos = FTell();
+    uint32 nameOffset;
+    if (nameOffset > 0 && nameOffset < FileSize()) {
+        local int64 save_pos = FTell();
+        FSeek(name_offset_pos + nameOffset);
+        string FilePath;
+        FSeek(save_pos);
+    }
+    uint32 scaledOffset; // for LOAD_TYPE 0, it points to the file in the decompressed buffer
+                        // for 1 and 2, it points to the zstd frame in uncompressed buffer
+    uint32 compressedSize;
+    uint32 packFileSerializedSize; // see PACK.bt
+    uint32 packFileResourceSize; // see PACK.bt
+    ubyte archiveIndex;
+    ubyte flags;
+    ubyte padding[2];
+} FileEntry;
+
+
+typedef struct {
+    uint32 numArchives;
+    local int64 archive_array_offset_field_pos = FTell();
+    uint32 offsetToArray;
+    uint32 fileEntryCount;
+    local int64 file_table_offset_field_pos = FTell();
+    uint32 offsetToFileTable;
+
+    FSeek(archive_array_offset_field_pos + offsetToArray);
+    ArchiveEntry entries[numArchives] <optimize=false>;
+
+    FSeek(file_table_offset_field_pos + offsetToFileTable);
+    FileEntry fileTable[fileEntryCount] <optimize=false>;
+} tpArchiveFileParam;

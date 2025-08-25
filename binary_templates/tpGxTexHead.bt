@@ -24,12 +24,12 @@ typedef struct {
 		uint32 texWidth;
 		uint32 texHeight;
 
-		uint32 surfaces;
-		uint32 unknownInt0;
+		uint32 texDepth;
+		uint32 numSurfaces; // 1 for 2d, 6 for cubemaps
 
 		uint32 texSize;
 
-		uint32 unknownInt1;
+		uint32 unk2; // always 2147483648 (2**31)
 		XonSurfaceDXGIFormat XonSurfaceFormat;
 
 		uint32 numMipSurfaces;
@@ -38,18 +38,20 @@ typedef struct {
 	} header;
 
 	FSeek( header.mipSurfaceStartOffset + header.offsetToMipSurface );
+    
+    // First mipsurface is always aligned 16 bytes to the start of the tpGxTexHead.header
+    
 	struct {
-		uint32 offset;
-        uint32 unknown_1;
-        uint32 unknown_2;
-        uint32 unknown_3;
+		uint32 offset; // From texData
+        uint32 unk3; // always 0
+        uint32 rowPitch;
+        uint32 unk4; // always 0
         uint32 size;
-        uint32 unknown_5;
+        uint32 unk5; // always 0
         uint32 width;
         uint32 height;
-        uint32 unknown_8;
-        uint32 unknown_9;
+        uint32 currentDepth;
+        uint32 heightInBlocks;
 	} mipSurface[header.numMipSurfaces];
 } tpGxTexHead;
 
-// 20096
