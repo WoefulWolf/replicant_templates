@@ -1,0 +1,60 @@
+enum EffectID {
+     None = 0,
+     HealthAddPercent = 1,
+     Duration = 2, // Value in Seconds
+     ReviveAllies = 5, // Valueless
+     PhysAttackScalePercent = 6,
+     MagAttackScalePercent = 7,
+     PhysDefScalePercent = 8,
+     MagDefScalePercent = 9,
+     CurePosion = 10, // Valueless
+     Bait = 12, // Optional Value, -1 for infinite use
+     GrowSpeedPercentScale = 13, 
+     FloweringAndHarvestingLengthPercentScale = 14,
+     HarvestOutputPercentScale = 15,
+     Plantable = 16, // Valueless
+     ReadableDisplayType = 17, // Value unsure. Possibly the visual background of readable items
+     Readable = 18, // Value is stringID to display
+     Map = 19, // Value is map id?
+};
+
+struct {
+    
+    char magic[4];
+    uint32 unk1;
+    uint32 headerSize;
+    uint32 unk2;
+    uint32 itemCount;
+    uint32 unk3;
+    uint64 pDataStart;
+
+} header;
+
+struct {
+    
+     uint32 itemID;
+     struct {
+        uchar flag0 : 1 <name="Consumable">;
+        uchar flag1 : 1 <name="Cultivation">;
+        uchar flag2 : 1 <name="Fish">;
+        uchar flag3 : 1 <name="Material">;
+        uchar flag4 : 1 <name="Document">;
+        uchar flag5 : 1 <name="Quest">;
+        uchar flag6 : 1 <name="Key">;
+        uchar flag7 : 1 <name="Map">;
+     } flags;
+     byte padding[3];
+     uint32 isRare;                 
+     uint32 nameStringID;
+     uint32 descStringID;
+     int32 sellPrice;
+     int32 buyPrice;
+     uint32 effectCount;
+     
+     struct {
+         EffectID effectID;          
+         float  effectValue;       
+     } effects[4];
+                       
+
+} item[header.itemCount] <optimize=false>;
