@@ -1,0 +1,15 @@
+struct {
+    
+    char magic[4]; 
+    uint32 projectID;
+    uint32 entryCount; 
+    uint32 unk1;
+    
+} header;
+
+struct {
+    
+    uint32 unk2;
+    uint32 unk3;
+
+} entry[header.entryCount];
