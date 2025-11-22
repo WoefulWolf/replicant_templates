@@ -14,24 +14,20 @@ void alignRelative2(int relativeStart, int alignment) {
 }
 
 #include "tpXonAssetHeader.bt"
-
 #include "tpGxMeshHead.bt"
 #include "tpGxMeshHeadData.bt"
-
 #include "tpGxTexHead.bt"
 #include "tpGxTexHeadData.bt"
-
 #include "tpTandaFontSdfParam.bt"
 #include "tpArchiveFileParam.bt"
-
 #include "WeaponSpecPackage.bt"
 
 struct {
     char    id[4];
     uint32  version;
     uint32  packFileTotalSize;
-    uint32  packFileSerializedSize;
-    uint32  packFileResourceSize;
+    uint32  packFileHeadersSize;
+    uint32  packFileResourcesSize;
     uint32  pathCount;
     local uint32 pathsStartOffset = FTell();
     uint32  offsetToPaths;
@@ -94,7 +90,7 @@ if (header.fileCount != 0) {
             local uint32 contentStartOffset = FTell();
             uint32  offsetToContentStart;
             AssetDataInfo assetDataInfo;
-   
+
             local uint32 returnPos = FTell();
             FSeek(nameStartOffset + offsetToName);
             string name;  
@@ -110,17 +106,15 @@ if (header.fileCount != 0) {
             } else if (id == "ITD\x00") {
                 #include "ITDLL.bt"
             }
-            
-
             FSeek(returnPos);
         } file[header.fileCount] <optimize=false>;
     } files;
 
-    if (header.packFileResourceSize != 0) {
+    if (header.packFileResourcesSize != 0) {
 	    local int i;
 	    for (i = 0; i < header.fileCount; i++) {
 	        if (files.file[i].assetDataInfo.has_data) {
-                FSeek(header.packFileSerializedSize + files.file[i].assetDataInfo.offset);
+                FSeek(header.packFileHeadersSize + files.file[i].assetDataInfo.offset);
                 
 	            struct {
 	        	    if (files.file[i].content.AssetTypeName == "tpGxMeshHead") {
