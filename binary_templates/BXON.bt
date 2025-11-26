@@ -13,15 +13,15 @@ struct {
     string assetType;
 
     FSeek(assetDataStartOffset + offsetToAssetData);
-    if (assetType == "tpXonAssetHead") {
-        tpXonAssetHead assetHead;
+    if (assetType == "tpXonAssetHeader") {
+        tpXonAssetHeader assetHeader;
     } else if (assetType == "tpGxMeshHead") {
         tpGxMeshHead meshHead;
     } else if (assetType == "tpGxTexHead") {
     	tpGxTexHead texHead;
     } else if (assetType == "tpTandaFontSdfParam") {
         tpTandaFontSdfParam tandaFontSdfParam;
-    } else if (AssetTypeName == "tpArchiveFileParam") {
+    } else if (assetType == "tpArchiveFileParam") {
         tpArchiveFileParam archiveFileParam;
     }
 } content;
