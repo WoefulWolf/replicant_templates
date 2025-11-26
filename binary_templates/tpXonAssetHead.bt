@@ -12,12 +12,12 @@ typedef struct {
 	FSeek(header.unknownAssetsStartOffset + header.offsetToUnknownAssets);
 	if (header.numUnknownAssets != 0) {
 		struct {
-			local uint32 unknownIDStartOffset = FTell();
-			uint32 offsetToUnknownID;
+			local uint32 unknownIdStartOffset = FTell();
+			uint32 offsetToUnknownId;
 
-			FSeek(unknownIDStartOffset + offsetToUnknownID);
+			FSeek(unknownIdStartOffset + offsetToUnknownId);
 
-			uint32 unknownID <format=hex>;
+			uint32 unknownId <format=hex>;
 			uint32 unknownThing1;
 
 			if (unknownThing1 == 0) return;
@@ -47,7 +47,7 @@ typedef struct {
 
 			FSeek(unknown2StartOffset + offsetToUnknown2);
 			struct {
-				uint32 unknownID <format=hex>;
+				uint32 unknownId <format=hex>;
 
 				local uint32 stringStartOffset = FTell();
 				uint32 offsetToString;
@@ -68,7 +68,7 @@ typedef struct {
 				struct {
 					FSeek(materialParameterHeader[i].unknown1StartOffset + materialParameterHeader[i].offsetToUnknown1);
 					struct {
-						uint32 unknownID <format=hex>;
+						uint32 unknownId <format=hex>;
 						
 						local uint32 stringStartOffset = FTell();
 						uint32 offsetToString;
@@ -94,7 +94,7 @@ typedef struct {
 			FSeek(texturesStartOffset + offsetToTextures);
 			struct {
 				struct {
-					uint32 unknownID <format=hex>;
+					uint32 unknownId <format=hex>;
 
 					local uint32 stringStartOffset = FTell();
 					uint32 offsetToString;
@@ -104,7 +104,7 @@ typedef struct {
 					string unknownString;
 					FSeek(returnPos);
 
-					uint32 unknownID2 <format=hex>;
+					uint32 unknownId2 <format=hex>;
 					
 					local uint32 stringStart2Offset = FTell();
 					uint32 offsetToString2;
@@ -122,7 +122,7 @@ typedef struct {
 			FSeek(unknownTPVarsStartOffset + offsetToUnknownTPVars);
 			struct {
 				struct {
-					uint32 unknownID <format=hex>;
+					uint32 unknownId <format=hex>;
 					
 					local uint32 stringStartOffset = FTell();
 					uint32 offsetToString;
@@ -144,7 +144,7 @@ typedef struct {
 		FSeek(header.unknownPathsStartOffset + header.offsetToUnknownPaths);
 		struct {
 			struct {
-				uint32 unknownID <format=hex>;
+				uint32 unknownId <format=hex>;
 				
 				local uint32 pathStartOffset = FTell();
 				uint32 offsetToPath;
@@ -158,4 +158,4 @@ typedef struct {
 			} unknownPath[header.numUnknownPaths] <optimize=false>;
 		} unknownPaths;
 	}
-} tpGxAssetHeader;
+} tpXonAssetHead;

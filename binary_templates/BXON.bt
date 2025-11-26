@@ -2,24 +2,24 @@
 // Yretenai
 
 struct {
-    char    id[4];
+    char    magic[4];
     uint32  version;
-    uint32  projectID<format=hex>;
-    local uint32 assetTypeNameStartOffset = FTell();
-    uint32  offsetToAssetTypeName;
+    uint32  projectId<format=hex>;
+    local uint32 assetTypeStartOffset = FTell();
+    uint32  offsetToAssetType;
     local uint32 assetDataStartOffset = FTell();
-    uint32  offsetToAssetTypeData;
-    FSeek(assetTypeNameStartOffset + offsetToAssetTypeName);
-    string AssetTypeName;
+    uint32  offsetToAssetData;
+    FSeek(assetTypeStartOffset + offsetToAssetType);
+    string assetType;
 
-    FSeek(assetDataStartOffset + offsetToAssetTypeData);
-    if (AssetTypeName == "tpXonAssetHeader") {
-        tpGxAssetHeader assetHeader;
-    } else if (AssetTypeName == "tpGxMeshHead") {
+    FSeek(assetDataStartOffset + offsetToAssetData);
+    if (assetType == "tpXonAssetHead") {
+        tpXonAssetHead assetHead;
+    } else if (assetType == "tpGxMeshHead") {
         tpGxMeshHead meshHead;
-    } else if (AssetTypeName == "tpGxTexHead") {
+    } else if (assetType == "tpGxTexHead") {
     	tpGxTexHead texHead;
-    } else if (AssetTypeName == "tpTandaFontSdfParam") {
+    } else if (assetType == "tpTandaFontSdfParam") {
         tpTandaFontSdfParam tandaFontSdfParam;
     }
 } content;
