@@ -23,5 +23,7 @@ struct {
         tpTandaFontSdfParam tandaFontSdfParam;
     } else if (assetType == "tpArchiveFileParam") {
         tpArchiveFileParam archiveFileParam;
+    } else if (AssetTypeName == "WeaponSpecPackage") {
+        WeaponSpecPackage weaponSpecPackage;
     }
 } content;

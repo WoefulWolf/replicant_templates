@@ -12,7 +12,7 @@ struct {
     uint32 fileNameSize;
     struct {
         char fileName[fileNameSize];
-    } fileName[3];
+    } fileName[3] <optimize=false>;
 
     local int i;
     for (i = 0; i < fileCount; i++) {

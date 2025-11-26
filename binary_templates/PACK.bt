@@ -14,8 +14,8 @@ void alignRelative2(int relativeStart, int alignment) {
 }
 
 #include "tpXonAssetHeader.bt"
-
 #include "tpGxMeshHead.bt"
+
 #include "tpGxMeshData.bt"
 
 #include "tpGxTexHead.bt"
@@ -23,6 +23,7 @@ void alignRelative2(int relativeStart, int alignment) {
 
 #include "tpTandaFontSdfParam.bt"
 #include "tpArchiveFileParam.bt"
+#include "WeaponSpecPackage.bt"
 
 struct {
     char    magic[4];
@@ -93,13 +94,15 @@ if (header.filesCount != 0) {
         FSeek(contentStartOffset + offsetToContent);
         char id[4] <hidden=true>;
         FSkip(-4);
-        if (id == "BXON") {
-            #include "BXON.bt"
-        } else if (id == "CJF") {
-            #include "CJF.bt"
-        } else if (id == "KPK") {
-            #include "KPKy.bt"
-        }
+            if (id == "BXON") {
+                #include "BXON.bt"
+            } else if (id == "CJF\x01") {
+                #include "CJF.bt"
+            } else if (id == "KPK\x7F" || id == "KPKy") {
+                #include "KPKy.bt"
+            } else if (id == "ITD\x00") {
+                #include "ITDLL.bt"
+            }
 
         FSeek(returnPos);
     } files[header.filesCount] <optimize=false>;
@@ -115,6 +118,7 @@ if (header.filesCount != 0) {
 		        } else if (files[i].content.assetType == "tpGxTexHead") {
 		        	tpGxTexData texData(files[i].content.texHead);
 		        }
+
             }
 	    }
         } filesData <optimize=false>;

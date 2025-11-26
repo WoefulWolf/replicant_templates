@@ -1,0 +1,31 @@
+typedef struct {
+    
+    struct {
+        uint32 entryCount;
+        local uint32 dataStartOffsetMember = FTell();
+        uint32 offsetToDataStart;
+    } header;
+    
+    FSeek(header.dataStartOffsetMember+header.offsetToDataStart);
+    
+    struct {
+        uint32 unk1; 
+        uint32 unk2;
+        uint32 unk3;
+        uint32 unk4;
+        uint32 unk5;
+        uint32 unk6;
+        uint32 weaponID;
+        uint32 nameStringID;
+        uint32 descStringID;
+        uint32 unkStringID1;
+        uint32 unkStringID2;
+        uint32 unkStringID3;
+        uint32 storyStringID;
+        uint32 unk13[81];
+        byte unk14;
+        byte padding[3];
+        
+    } entries[header.entryCount];
+    
+} WeaponSpecPackage;
