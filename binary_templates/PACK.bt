@@ -15,88 +15,85 @@ void alignRelative2(int relativeStart, int alignment) {
 
 #include "tpXonAssetHeader.bt"
 #include "tpGxMeshHead.bt"
-#include "tpGxMeshHeadData.bt"
+
+#include "tpGxMeshData.bt"
+
 #include "tpGxTexHead.bt"
-#include "tpGxTexHeadData.bt"
+#include "tpGxTexData.bt"
+
 #include "tpTandaFontSdfParam.bt"
 #include "tpArchiveFileParam.bt"
 #include "WeaponSpecPackage.bt"
 
 struct {
-    char    id[4];
+    char    magic[4];
     uint32  version;
-    uint32  packFileTotalSize;
-    uint32  packFileHeadersSize;
-    uint32  packFileResourcesSize;
-    uint32  pathCount;
-    local uint32 pathsStartOffset = FTell();
-    uint32  offsetToPaths;
-    uint32  assetPackCount;
-    local uint32 assetPacksStartOffset = FTell();
-    uint32  offsetToAssetPacks;
-    uint32  fileCount;
+    uint32  packTotalSize;
+    uint32  packSerializedSize;
+    uint32  packFilesDataSize;
+    uint32  importsCount;
+    local uint32 importsStartOffset = FTell();
+    uint32  offsetToImports;
+    uint32  assetPackagesCount;
+    local uint32 assetPackagesStartOffset = FTell();
+    uint32  offsetToAssetPackages;
+    uint32  filesCount;
     local uint32 filesStartOffset = FTell();
     uint32  offsetToFiles;
 } header;
 
-if (header.pathCount != 0) {
-    FSeek( header.pathsStartOffset + header.offsetToPaths );
-    struct{
-        struct {
-            uint32  hash<format=hex>;
-            local uint32 pathStartOffset = FTell();
-            uint32  offsetToPath;
-            uint32  unknown0;
-            local uint returnPos = FTell();
-            FSeek(pathStartOffset + offsetToPath);
-            string path;
-            FSeek(returnPos);
-        } path[header.pathCount] <optimize=false>;
-    } paths;
-}
-
-if (header.assetPackCount != 0) {
-    FSeek( header.assetPacksStartOffset + header.offsetToAssetPacks );
+if (header.importsCount != 0) {
+    FSeek( header.importsStartOffset + header.offsetToImports );
     struct {
-        struct {
-            uint32  hash<format=hex>;
-            local uint32 nameStartOffset = FTell();
-            uint32  offsetToName;
-            uint32  fileSize;
-            local uint32 contentStartOffset = FTell();
-            uint32  offsetToContentStart;
-            uint32  offsetToContentEnd;
-            FSeek(nameStartOffset + offsetToName);
-            string name;
-            
-            FSeek( contentStartOffset + offsetToContentStart );
-            #include "BXON.bt"
-        } assetPack[header.assetPackCount] <optimize=false>;
-    } assetPacks;
+        uint32  pathHash<format=hex>; // FNV-1
+        local uint32 pathStartOffset = FTell();
+        uint32  offsetToPath;
+        uint32  unknown0;
+        local uint returnPos = FTell();
+        FSeek(pathStartOffset + offsetToPath);
+        string path;
+        FSeek(returnPos);
+    } imports[header.importsCount] <optimize=false>;
 }
 
-if (header.fileCount != 0) {
+if (header.assetPackagesCount != 0) {
+    FSeek( header.assetPackagesStartOffset + header.offsetToAssetPackages );
+    struct {
+        uint32  nameHash<format=hex>;
+        local uint32 nameStartOffset = FTell();
+        uint32  offsetToName;
+        uint32  contentSize;
+        local uint32 contentStartOffset = FTell();
+        uint32  offsetToContentStart;
+        uint32  offsetToContentEnd;
+        FSeek(nameStartOffset + offsetToName);
+        string name;
+        FSeek( contentStartOffset + offsetToContentStart );
+        #include "BXON.bt"
+    } assetPackages[header.assetPackagesCount] <optimize=false>;
+}
+
+if (header.filesCount != 0) {
     FSeek( header.filesStartOffset + header.offsetToFiles );
+    struct DataOffset {
+        uint offset   : 31; 
+        uint has_data : 1;  
+    };
     struct {
-        struct AssetDataInfo {
-            uint offset   : 31; 
-            uint has_data : 1;  
-        };
-        struct {
-            uint32 nameHash <format=hex>; // FNV-1
-            local uint32 nameStartOffset = FTell();
-            uint32 offsetToName;
-            uint32 fileSize;
-            local uint32 contentStartOffset = FTell();
-            uint32  offsetToContentStart;
-            AssetDataInfo assetDataInfo;
+        uint32 nameHash <format=hex>; // FNV-1
+        local uint32 nameStartOffset = FTell();
+        uint32 offsetToName;
+        uint32 contentSize;
+        local uint32 contentStartOffset = FTell();
+        uint32  offsetToContent;
+        DataOffset dataOffset;
 
-            local uint32 returnPos = FTell();
-            FSeek(nameStartOffset + offsetToName);
-            string name;  
-            FSeek(contentStartOffset + offsetToContentStart);
-            char id[4];
-            FSkip(-4);
+        local uint32 returnPos = FTell();
+        FSeek(nameStartOffset + offsetToName);
+        string name;  
+        FSeek(contentStartOffset + offsetToContent);
+        char id[4] <hidden=true>;
+        FSkip(-4);
             if (id == "BXON") {
                 #include "BXON.bt"
             } else if (id == "CJF\x01") {
@@ -106,24 +103,24 @@ if (header.fileCount != 0) {
             } else if (id == "ITD\x00") {
                 #include "ITDLL.bt"
             }
-            FSeek(returnPos);
-        } file[header.fileCount] <optimize=false>;
-    } files;
 
-    if (header.packFileResourcesSize != 0) {
+        FSeek(returnPos);
+    } files[header.filesCount] <optimize=false>;
+
+    if (header.packFilesDataSize != 0) {
 	    local int i;
-	    for (i = 0; i < header.fileCount; i++) {
-	        if (files.file[i].assetDataInfo.has_data) {
-                FSeek(header.packFileHeadersSize + files.file[i].assetDataInfo.offset);
-                
-	            struct {
-	        	    if (files.file[i].content.AssetTypeName == "tpGxMeshHead") {
-		                tpGxMeshHeadData meshData(files.file[i].content.meshHead);
-		            } else if (files.file[i].content.AssetTypeName == "tpGxTexHead") {
-		        	    tpGxTexHeadData texData(files.file[i].content.texHead);
-		            }
-	            } assetsData <optimize=false>;
+        struct {
+	    for (i = 0; i < header.filesCount; i++) {
+	        if (files[i].dataOffset.has_data) {
+                FSeek(header.packSerializedSize + files[i].dataOffset.offset);
+	        	if (files[i].content.assetType == "tpGxMeshHead") {
+		            tpGxMeshData meshData(files[i].content.meshHead);
+		        } else if (files[i].content.assetType == "tpGxTexHead") {
+		        	tpGxTexData texData(files[i].content.texHead);
+		        }
+
             }
 	    }
+        } filesData <optimize=false>;
     }
  }

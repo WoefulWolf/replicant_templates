@@ -1,6 +1,6 @@
 // Woeful_Wolf
 
-struct tpGxMeshHeadData(tpGxMeshHead &meshHead) {
+struct tpGxMeshData(tpGxMeshHead &meshHead) {
 	local uint32 assetResourceStart = FTell();
 	local int i;
 	local int k;
