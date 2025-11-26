@@ -1,0 +1,117 @@
+typedef struct {
+    float x, y, z, w;
+} Vector4;
+
+typedef enum <uint32> {
+    TYPE_DEFAULT = 0,
+    TYPE_INT     = 1,
+    TYPE_FLOAT   = 2,
+    TYPE_STRING  = 3,
+    TYPE_UNKNOWN_4 = 4,
+    TYPE_UNKNOWN_5 = 5
+} StblFieldType;
+
+
+struct STBL_Field {
+    StblFieldType field_type;
+    
+    union {
+        float  as_float;
+        int32  as_int;
+        uint32 offset_to_string;
+    } data;
+
+    switch(field_type) {
+        case TYPE_INT:
+        case TYPE_FLOAT:
+            break;
+        case TYPE_STRING:
+            if (data.offset_to_string > 0) {
+                local int64 returnPos = FTell();
+                FSeek(data.offset_to_string);
+                string value;
+                FSeek(returnPos);
+            }
+            break;
+        default:
+            break;
+    }
+};
+
+struct STBL_SpatialEntity {
+    Vector4 position;
+    Vector4 volume_data;
+    char    name[32];
+    int32   unknown_params[4];
+    byte    padding[16];
+};
+
+struct STBL_TableDescriptor {
+    char    tableName[32];
+    int32   rowCount;
+    int32   fieldCount;
+    uint32  dataOffset;
+    byte    unknown[20];
+};
+
+
+struct {
+    char    magic_bytes[4];
+    if (magic_bytes != "STBL") {
+        Warning("is not a STBL file");
+        return -1;
+    }
+    int32   version;
+    byte    padding_0[4];
+    int32   spatialEntityCount;
+    int32   header_size;
+    byte    padding_1[4];
+    uint32  tableDescriptorOffset;
+    int32   tableCount;
+    byte    unknown[48];
+} Header;
+
+if (Header.spatialEntityCount > 0) {
+    FSeek(Header.header_size);
+    struct {
+        STBL_SpatialEntity entities[Header.spatialEntityCount] <optimize=false>;
+    } SpatialEntityBlock <optimize=false>;
+}
+
+if (Header.tableCount > 0) {
+    FSeek(Header.tableDescriptorOffset);
+    struct {
+        STBL_TableDescriptor descriptors[Header.tableCount] <optimize=false>;
+    } TableDescriptorBlock <optimize=false>;
+
+
+local int rowCount;
+local int fieldCount;
+local uint32 dataOffset;
+
+struct {
+    local int i;
+
+    for (i = 0; i < Header.tableCount; i++) {
+
+        rowCount   = TableDescriptorBlock.descriptors[i].rowCount;
+        fieldCount = TableDescriptorBlock.descriptors[i].fieldCount;
+        dataOffset = TableDescriptorBlock.descriptors[i].dataOffset;
+
+        if (rowCount < 0 || fieldCount < 0 || rowCount > 10000 || fieldCount > 1024) {
+            Warning(SPrintf("Skipping table %d: rowCount=%d, fieldCount=%d", i, rowCount, fieldCount));
+            continue;
+        }
+
+        FSeek(dataOffset);
+
+        struct {
+            struct {
+                STBL_Field fields[fieldCount] <optimize=false>;
+            } rows[rowCount] <optimize=false>;
+        } Table <optimize=false>;
+    }
+} Tables;
+
+
+}
