@@ -6,12 +6,10 @@ void alignRelative(int relativeStart, int alignment) {
     FSeek(relativeStart + alignOffset);
 }
 
-void alignRelative2(int relativeStart, int alignment) {
-	local uint32 v = relativeStart % alignment;
-	if (v != 0) {
-		FSeek(relativeStart + alignment - v);
-	}
-}
+struct DataOffset {
+    uint offset   : 31; 
+    uint has_data : 1;  
+};
 
 #include "tpXonAssetHeader.bt"
 #include "tpGxMeshHead.bt"
@@ -75,10 +73,6 @@ if (header.assetPackagesCount != 0) {
 
 if (header.filesCount != 0) {
     FSeek( header.filesStartOffset + header.offsetToFiles );
-    struct DataOffset {
-        uint offset   : 31; 
-        uint has_data : 1;  
-    };
     struct {
         uint32 nameHash <format=hex>; // FNV-1
         local uint32 nameStartOffset = FTell();

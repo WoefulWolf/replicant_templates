@@ -23,37 +23,35 @@ typedef  enum <uint32> {
 
 typedef struct {
 	struct {
-		uint32 texWidth;
-		uint32 texHeight;
+		uint32 width;
+		uint32 height;
 
-		uint32 texDepth;
-		uint32 numSurfaces; // 1 for 2d, 6 for cubemaps
+		uint32 depth;
+		uint32 mipCount;
 
-		uint32 texSize;
+		uint32 size;
 
-		uint32 unk2; // always 2147483648 (2**31)
+		DataOffset unknownOffset;
 		XonSurfaceDXGIFormat XonSurfaceFormat;
 
-		uint32 numMipSurfaces;
-		local uint32 mipSurfaceStartOffset = FTell();
-		uint32 offsetToMipSurface;
+		uint32 subresourcesCount;
+		local uint32 subresourcesStartOffset = FTell();
+		uint32 offsetToSubresources;
 	} header;
 
-	FSeek( header.mipSurfaceStartOffset + header.offsetToMipSurface );
-    
-    // First mipsurface is always aligned 16 bytes to the start of the tpGxTexHead.header
+	FSeek( header.subresourcesStartOffset + header.offsetToSubresources );
     
 	struct {
-		uint32 offset; // From texData
-        uint32 unk3; // always 0
+		uint32 offset; // In the texData
+        uint32 unknown0; // always 0
         uint32 rowPitch;
-        uint32 unk4; // always 0
+        uint32 unknown1; // always 0
         uint32 size;
-        uint32 unk5; // always 0
+        uint32 unknown2; // always 0
         uint32 width;
         uint32 height;
-        uint32 currentDepth;
-        uint32 heightInBlocks;
-	} mipSurface[header.numMipSurfaces];
+        uint32 depth;
+        uint32 rowCount;
+	} subresources[header.subresourcesCount];
 } tpGxTexHead;
 

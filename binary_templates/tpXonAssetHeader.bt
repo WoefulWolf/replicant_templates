@@ -18,6 +18,14 @@ typedef struct {
             
 			FSeek(assetStartOffset + offsetToAsset);
 			uint32 assetTypeHash <format=hex>;
+            
+            // 0x8DDAB24E = Mesh
+            // 0x9C6E2AC  = Shader Binary
+            // 0x14C0245D = Master Material
+            // 0x3ABE8760 = Material Instance
+            
+            if (assetTypeHash != 0x3ABE8760) return; // Only material instance is impemented below
+            
 			uint32 parentAssetPathHash <format=hex>; // FNV-1
 
 			if (parentAssetPathHash == 0) return;
