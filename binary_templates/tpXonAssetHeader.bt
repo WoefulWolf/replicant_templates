@@ -24,7 +24,7 @@ typedef struct {
             // 0x14C0245D = Master Material
             // 0x3ABE8760 = Material Instance
             
-            if (assetTypeHash != 0x3ABE8760) return; // Only material instance is impemented below
+            if (assetTypeHash != 0x3ABE8760) return; // Only material instance is implemented below
             
 			uint32 parentAssetPathHash <format=hex>; // FNV-1
 

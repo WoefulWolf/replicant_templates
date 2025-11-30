@@ -1,98 +1,104 @@
 // Woeful_Wolf
 
 struct tpGxMeshData(tpGxMeshHead &meshHead) {
-	local uint32 assetResourceStart = FTell();
+	local uint32 fileDataStart = FTell();
 	local int i;
 	local int k;
 
-	for (i = 0; i < meshHead.header.objectGroupCount; i++) {
+    FSeek(fileDataStart + meshHead.header.vertexBuffersOffset.offset);
+	for (i = 0; i < meshHead.header.objectCount; i++) {
 		struct (tpGxMeshHead &meshHead) {
-			for (k = 0; k < meshHead.objectGroups.objectGroup[i].vertexDataCount; k++) {
-				FSeek(assetResourceStart + meshHead.objectGroups.objectGroup[i].vertexData[k].objectGroupVertexDataOffset);
+			for (k = 0; k < meshHead.objects[i].vertexBufferCount; k++) {
+				FSeek(fileDataStart + meshHead.objects[i].vertexBuffers[k].vertexBufferOffset);
 				struct (tpGxMeshHead &meshHead){
-					if (meshHead.objectGroups.objectGroup[i].vertexData[k].vertexStructSize == 12) {
-						if (meshHead.objectGroups.objectGroup[i].vertexData[k].vertexStructFlag == 0) {
+					if (meshHead.objects[i].vertexBuffers[k].vertexBufferSize == 12) {
+						if (meshHead.objects[i].vertexBuffers[k].vertexBufferType == POSITION) {
 							struct {
 								float x;
 								float y;
 								float z;
-							} vertexPos[meshHead.objectGroups.objectGroup[i].vertexCount];
-						} else if (meshHead.objectGroups.objectGroup[i].vertexData[k].vertexStructFlag == 6) {
+							} positions[meshHead.objects[i].vertexCount];
+						} else if (meshHead.objects[i].vertexBuffers[k].vertexBufferType == WEIGHTS) {
 							struct {
 								float boneWeight0;
 								float boneWeight1;
 								float boneWeight2;
-							} vertexWeights[meshHead.objectGroups.objectGroup[i].vertexCount];
+							} weights[meshHead.objects[i].vertexCount];
 						} else {
 							struct {
 								float unknownFloats[3];
-							} unknownStruct[meshHead.objectGroups.objectGroup[i].vertexCount];
+							} unknown[meshHead.objects[i].vertexCount];
 						}
 						
-					} else if (meshHead.objectGroups.objectGroup[i].vertexData[k].vertexStructSize == 8) {
-						if (meshHead.objectGroups.objectGroup[i].vertexData[k].vertexStructFlag == 6) {
+					} else if (meshHead.objects[i].vertexBuffers[k].vertexBufferSize == 8) {
+						if (meshHead.objects[i].vertexBuffers[k].vertexBufferType == WEIGHTS) {
 							struct {
 								float boneWeight0;
 								float boneWeight1;
-							} vertexWeights[meshHead.objectGroups.objectGroup[i].vertexCount];
+							} weights[meshHead.objects[i].vertexCount];
 						} else {
 							struct {
 								float unknownFloats[2];
-							} unknownStruct[meshHead.objectGroups.objectGroup[i].vertexCount];
+							} unknown[meshHead.objects[i].vertexCount];
 						}
 
-					} else if (meshHead.objectGroups.objectGroup[i].vertexData[k].vertexStructSize == 4) {
-						if (meshHead.objectGroups.objectGroup[i].vertexData[k].vertexStructFlag == 1) {
+					} else if (meshHead.objects[i].vertexBuffers[k].vertexBufferSize == 4) {
+						if (meshHead.objects[i].vertexBuffers[k].vertexBufferType == NORMAL) {
 							struct {
 								byte nx;
 								byte ny;
 								byte nz;
 								byte dummy;
-							} vertexNormal[meshHead.objectGroups.objectGroup[i].vertexCount];
-						} else if (meshHead.objectGroups.objectGroup[i].vertexData[k].vertexStructFlag == 2) {
+							} normals[meshHead.objects[i].vertexCount];
+                        } else if (meshHead.objects[i].vertexBuffers[k].vertexBufferType == COLOR) {
+                            struct {
+								ubyte r;
+								ubyte g;
+								ubyte b;
+								ubyte a;
+							} colors[meshHead.objects[i].vertexCount];
+						} else if (meshHead.objects[i].vertexBuffers[k].vertexBufferType == TANGENT) {
 							struct {
 								byte tx;
 								byte ty;
 								byte tz;
 								byte bi;
-							} vertexTangent[meshHead.objectGroups.objectGroup[i].vertexCount];
-						} else if (meshHead.objectGroups.objectGroup[i].vertexData[k].vertexStructFlag == 4) {
+							} tangents[meshHead.objects[i].vertexCount];
+						} else if (meshHead.objects[i].vertexBuffers[k].vertexBufferType == UV) {
 							struct {
 								hfloat u;
 								hfloat v;
-							} vertexUV[meshHead.objectGroups.objectGroup[i].vertexCount];
-						} else if (meshHead.objectGroups.objectGroup[i].vertexData[k].vertexStructFlag == 5) {
+							} uvs[meshHead.objects[i].vertexCount];
+						} else if (meshHead.objects[i].vertexBuffers[k].vertexBufferType == BONES) {
 							struct {
 								ubyte boneIndex0;
 								ubyte boneIndex1;
 								ubyte boneIndex2;
 								ubyte boneIndex3;
-							} vertexBones[meshHead.objectGroups.objectGroup[i].vertexCount];
+							} bones[meshHead.objects[i].vertexCount];
 						} else {
 							struct {
 								ubyte unknownBytes[4];
-							} unknownStruct[meshHead.objectGroups.objectGroup[i].vertexCount];
+							} unknown[meshHead.objects[i].vertexCount];
 						}
 					}
-
-				} vertexData(meshHead) <optimize=false>;
+				} vertexBuffer(meshHead) <optimize=false>;
 			}
 			alignRelative(0, 4);
-		} objectGroupVertexData(meshHead) <optimize=false>;
+		} objectVertexBuffers(meshHead) <optimize=false>;
 	}
 
-	if ((FTell() - assetResourceStart) % 256 != 0) alignRelative(assetResourceStart, 256);
-
-	for (i = 0; i < meshHead.header.objectGroupCount; i++) {
+	FSeek(fileDataStart + meshHead.header.indexBuffersOffset.offset);
+	for (i = 0; i < meshHead.header.objectCount; i++) {
 		struct (tpGxMeshHead &meshHead){
-			for (k = 0; k < meshHead.objectGroups.objectGroup[i].indicesCount/3; k++) {
-				if (meshHead.objectGroups.objectGroup[i].indicesStructSize == 2) {
+			for (k = 0; k < meshHead.objects[i].indexCount/3; k++) {
+				if (meshHead.objects[i].indexBufferSize == 2) {
 					struct {
 						ushort v0;
 						ushort v1;
 						ushort v2;
 					} loop;
-				} else if (meshHead.objectGroups.objectGroup[i].indicesStructSize == 4) {
+				} else if (meshHead.objects[i].indexBufferSize == 4) {
 					struct {
 						uint32 v0;
 						uint32 v1;
@@ -101,7 +107,6 @@ struct tpGxMeshData(tpGxMeshHead &meshHead) {
 				}
 			}
 			alignRelative(0, 4);
-		} objectGroupIndices(meshHead) <optimize=false>;
+		} objectIndices(meshHead) <optimize=false>;
 	}
-
 };

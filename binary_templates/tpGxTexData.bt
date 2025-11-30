@@ -1,10 +1,10 @@
 // Woeful_Wolf
 
 struct tpGxTexData(tpGxTexHead &texHead) {
-	local uint32 assetResourceStart = FTell();
+	local uint32 fileDataStart = FTell();
     local int i;
     for (i = 0; i < texHead.header.subresourcesCount; i++) {
-        FSeek(assetResourceStart + texHead.subresources[i].offset);
+        FSeek(fileDataStart + texHead.subresources[i].offset);
         struct (tpGxTexHead &texHead) {
             local uint32 subresourceStart = FTell();
             FSeek(subresourceStart + texHead.subresources[i].size);
