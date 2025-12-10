@@ -1,3 +1,9 @@
+typedef enum <uint8> {
+    ONE_HANDED = 0,
+    TWO_HANDED     = 1,
+    SPEAR   = 2
+} WeaponType;
+
 typedef struct {
     
     struct {
@@ -8,13 +14,14 @@ typedef struct {
     
     FSeek(header.dataStartOffsetMember+header.offsetToDataStart);
     
-    struct {
-        uint32 unk1; 
-        uint32 unk2;
-        uint32 unk3;
-        uint32 unk4;
-        uint32 unk5;
-        uint32 unk6;
+    struct  {
+        uint32 uint32_0x00;
+        uint32 uint32_0x04;
+        uint32 uint32_0x08;
+        uint32 uint32_0x0C;
+        uint32 uint32_0x10;
+        uint32 uint32_0x14;
+        
         uint32 weaponID;
         uint32 nameStringID;
         uint32 descStringID;
@@ -22,10 +29,106 @@ typedef struct {
         uint32 unkStringID2;
         uint32 unkStringID3;
         uint32 storyStringID;
-        uint32 unk13[81];
-        byte unk14;
-        byte padding[3];
+        
+        uint32 uint32_0x34;
+        uint32 uint32_0x38;
+        uint32 uint32_0x3C;
+        uint32 uint32_0x40;
+        float float_0x44;
+        uint32 uint32_0x48;
+        uint32 uint32_0x4C;
+        float float_0x50;
+        uint32 uint32_0x54;
+        uint32 uint32_0x58;
+        float float_0x5C;
+        uint32 uint32_0x60;
+        uint32 uint32_0x64;
+        float float_0x68;
+        float float_0x6C;
+        uint32 uint32_0x70;
+        float float_0x74;
+        uint32 uint32_0x78;
+        uint32 uint32_0x7C;
+        float float_0x80;
+        uint32 uint32_0x84;
+        uint32 uint32_0x88;
+        int32 int32_0x8C;
+        uint32 shopPrice;
+        float knockbackPercent;
+        uint32 uint32_0x98;
+        
+        uint32 level1Attack;
+        uint32 level1MagicPower;
+        uint32 level1GuardBreak;  
+        uint32 level1ArmourBreak;
+        float float_0xAC;
+        uint32 level1weight;
+        float float_0xB4;
+        float  float_0xB8;
+        
+        uint32 level2Attack;
+        uint32 level2MagicPower;
+        uint32 level2GuardBreak; 
+        uint32 level2ArmourBreak;
+        float float_0xCC;
+        uint32 level2weight;
+        float float_0xD4;
+        float float_0xD8;
+        
+        uint32 level2UpgradeCost;
+        int32 level2IngredientId1;
+        uint32 level2IngredientCount1;
+        int32 level2IngredientId2;
+        uint32 level2IngredientCount2;
+        int32 level2IngredientId3;
+        uint32 level2IngredientCount3;
+        
+        uint32 level3Attack;
+        uint32 level3MagicPower;
+        uint32 level3GuardBreak;  
+        uint32 level3ArmourBreak;
+        float float_0x108;
+        uint32 level3weight;
+        float float_0x110;
+        float float_0x114;
+        
+        uint32 level3UpgradeCost;
+        int32 level3IngredientId1;
+        uint32 level3IngredientCount1;
+        int32 level3IngredientId2;
+        uint32 level3IngredientCount2;
+        int32 level3IngredientId3;
+        uint32 level3IngredientCount3;
+        
+        uint32 level4Attack;
+        uint32 level4MagicPower;
+        uint32 level4GuardBreak; 
+        uint32 level4ArmourBreak;
+        float float_0x144;
+        uint32 level4weight;
+        float float_0x14C;
+        float float_0x150;
+        
+        uint32 level4UpgradeCost;
+        int32 level4IngredientId1;
+        uint32 level4IngredientCount1;
+        int32 level4IngredientId2;
+        uint32 level4IngredientCount2;
+        int32 level4IngredientId3;
+        uint32 level3IngredientCount3;
+        
+        uint32 uint32_0x170;
+        uint32 uint32_0x174;
+        WeaponType weaponType_0x178;
+        byte      padding_0x179[3];
+
         
     } entries[header.entryCount];
     
 } WeaponSpecPackage;
+
+
+    // 25 Very light
+        // 27 light
+        // 30 moderadte
+        // 32 heavy
