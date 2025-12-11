@@ -11,6 +11,8 @@ struct DataOffset {
     uint has_data : 1;  
 };
 
+#include "tpGxMeshAssetV2.bt"
+#include "tpGxMaterialInstanceV2.bt"
 #include "tpXonAssetHeader.bt"
 #include "tpGxMeshHead.bt"
 

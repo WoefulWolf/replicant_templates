@@ -1,5 +1,15 @@
 // Woeful_Wolf
 
+local int colorSeed = 0xABCDEF;
+
+int RandomColor() {
+    colorSeed = (colorSeed * 1103515245 + 12345) & 0x7FFFFFFF;
+    local int r = (colorSeed >> 16) & 0xFF;
+    local int g = (colorSeed >> 8) & 0xFF;
+    local int b = colorSeed & 0xFF;
+    return (r << 16) | (g << 8) | b;  // Return as 0xRRGGBB
+}
+
 struct tpGxMeshData(tpGxMeshHead &meshHead) {
 	local uint32 fileDataStart = FTell();
 	local int i;
@@ -89,24 +99,21 @@ struct tpGxMeshData(tpGxMeshHead &meshHead) {
 	}
 
 	FSeek(fileDataStart + meshHead.header.indexBuffersOffset.offset);
-	for (i = 0; i < meshHead.header.objectCount; i++) {
+	for (i = 0; i < meshHead.header.materialGroupCount; i++) {
 		struct (tpGxMeshHead &meshHead){
-			for (k = 0; k < meshHead.objects[i].indexCount/3; k++) {
-				if (meshHead.objects[i].indexBufferSize == 2) {
-					struct {
-						ushort v0;
-						ushort v1;
-						ushort v2;
-					} loop;
-				} else if (meshHead.objects[i].indexBufferSize == 4) {
-					struct {
-						uint32 v0;
-						uint32 v1;
-						uint32 v2;
-					} loop;
-				}
+			if (meshHead.objects[meshHead.materialGroups[i].objectIndex].indexBufferSize == 2) {
+				struct {
+					ushort v0;
+					ushort v1;
+					ushort v2;
+				} loops[meshHead.materialGroups[i].indexCount/3] <optimize=false>;
+			} else if (meshHead.objects[meshHead.materialGroups[i].objectIndex].indexBufferSize == 4) {
+				struct {
+					uint32 v0;
+					uint32 v1;
+					uint32 v2;
+				} loops[meshHead.materialGroups[i].indexCount/3] <optimize=false>;
 			}
-			alignRelative(0, 4);
-		} objectIndices(meshHead) <optimize=false>;
+		} materialGroupIndices(meshHead) <bgcolor=RandomColor(),optimize=false>;
 	}
 };
