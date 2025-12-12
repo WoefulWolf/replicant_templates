@@ -99,21 +99,24 @@ struct tpGxMeshData(tpGxMeshHead &meshHead) {
 	}
 
 	FSeek(fileDataStart + meshHead.header.indexBuffersOffset.offset);
-	for (i = 0; i < meshHead.header.materialGroupCount; i++) {
+	for (i = 0; i < meshHead.header.objectCount; i++) {
 		struct (tpGxMeshHead &meshHead){
-			if (meshHead.objects[meshHead.materialGroups[i].objectIndex].indexBufferSize == 2) {
-				struct {
-					ushort v0;
-					ushort v1;
-					ushort v2;
-				} loops[meshHead.materialGroups[i].indexCount/3] <optimize=false>;
-			} else if (meshHead.objects[meshHead.materialGroups[i].objectIndex].indexBufferSize == 4) {
-				struct {
-					uint32 v0;
-					uint32 v1;
-					uint32 v2;
-				} loops[meshHead.materialGroups[i].indexCount/3] <optimize=false>;
+			for (k = 0; k < meshHead.objects[i].indexCount/3; k++) {
+				if (meshHead.objects[i].indexBufferSize == 2) {
+					struct {
+						ushort v0;
+						ushort v1;
+						ushort v2;
+					} loop;
+				} else if (meshHead.objects[i].indexBufferSize == 4) {
+					struct {
+						uint32 v0;
+						uint32 v1;
+						uint32 v2;
+					} loop;
+				}
 			}
-		} materialGroupIndices(meshHead) <bgcolor=RandomColor(),optimize=false>;
+			alignRelative(0, 4);
+		} objectIndices(meshHead) <optimize=false>;
 	}
 };
