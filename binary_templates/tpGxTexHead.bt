@@ -1,25 +1,53 @@
 // Woeful_Wolf
 // Yretenai
 
-typedef  enum <uint32> {
-	UNKNOWN = 0,
-	R8G8B8A8_UNORM_STRAIGHT= 0x00010700,
-	R8G8B8A8_UNORM = 0x00010800,
-	R8G8B8A8_UNORM_SRGB = 0x00010B00,
-	BC1_UNORM = 0x00010F00,
-	BC1_UNORM_SRGB = 0x00011000,
-	BC2_UNORM = 0x00011100,
-	BC2_UNORM_SRGB = 0x00011200,
-	BC3_UNORM = 0x00011300,
-	BC3_UNORM_SRGB = 0x00011400,
-	BC4_UNORM = 0x00011500,
-	BC5_UNORM = 0x00011600,
-	BC7_UNORM = 0x00011900,
-    BC7_UNORM_SRGB = 0x00011A00,
-    BC7_UNORM_SRGB_VOLUMETRIC = 0x00021A00, // I reckon the first digit being 2 instead of the expected 1 is a due to a volumetric bit flag
-	R32G32B32A32_FLOAT = 0x00030000,
-	UNKN_A8_UNORM = 0x00031700,
-} XonSurfaceDXGIFormat;
+typedef enum <byte> {
+    TEXTURE2D = 1,
+    TEXTURE3D = 2,
+    CUBEMAP   = 3
+} ResourceDimension;
+
+typedef enum <byte> {
+    DXGI_FORMAT_R32G32B32A32_FLOAT          = 0,
+    DXGI_FORMAT_R32G32B32_FLOAT             = 1,
+    DXGI_FORMAT_R32G32_FLOAT                = 2,
+    DXGI_FORMAT_R16G16B16A16_FLOAT          = 3,
+    DXGI_FORMAT_R16G16B16A16_UNORM          = 4,
+    DXGI_FORMAT_R10G10B10A2_UNORM           = 5,
+    DXGI_FORMAT_R8G8B8A8_UNORM              = 6,
+    DXGI_FORMAT_R16G16_FLOAT                = 7,
+    DXGI_FORMAT_R16G16_UNORM                = 8,
+    DXGI_FORMAT_R32_FLOAT                   = 9,
+    DXGI_FORMAT_R8G8_UNORM                  = 10,
+    DXGI_FORMAT_R16_FLOAT                   = 11,
+    DXGI_FORMAT_R16_UNORM                   = 12,
+    DXGI_FORMAT_R8_UNORM                    = 13,
+    DXGI_FORMAT_A8_UNORM                    = 14,
+    DXGI_FORMAT_BC1_UNORM                   = 15,
+    DXGI_FORMAT_BC1_UNORM_SRGB              = 16,
+    DXGI_FORMAT_BC2_UNORM                   = 17,
+    DXGI_FORMAT_BC2_UNORM_SRGB              = 18,
+    DXGI_FORMAT_BC3_UNORM                   = 19,
+    DXGI_FORMAT_BC3_UNORM_SRGB              = 20,
+    DXGI_FORMAT_BC4_UNORM                   = 21,
+    DXGI_FORMAT_BC5_UNORM                   = 22,
+    DXGI_FORMAT_BC6H_UF16                   = 23,
+    DXGI_FORMAT_BC6H_SF16                   = 24,
+    DXGI_FORMAT_BC7_UNORM                   = 25,
+    DXGI_FORMAT_BC7_UNORM_SRGB              = 26,
+    DXGI_FORMAT_UNKNOWN                     = 27 
+} ResourceFormat;
+
+typedef struct {
+    byte usageMaybe;
+    ResourceFormat resourceFormat;
+    ResourceDimension resourceDimension;
+    byte generateMips;
+} XonSurfaceFormat <read=ReadXonSurfaceFormat>;
+
+string ReadXonSurfaceFormat(XonSurfaceFormat &sf) {
+    return EnumToString(sf.resourceFormat) + " | " + EnumToString(sf.resourceDimension);
+}
 
 typedef struct {
 	struct {
@@ -32,7 +60,7 @@ typedef struct {
 		uint32 size;
 
 		DataOffset unknownOffset;
-		XonSurfaceDXGIFormat XonSurfaceFormat;
+		XonSurfaceFormat xonSurfaceFormat;
 
 		uint32 subresourcesCount;
 		local uint32 subresourcesStartOffset = FTell();
