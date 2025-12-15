@@ -117,14 +117,14 @@ typedef struct {
 	struct {
 		local uint32 nameStartOffset = FTell();
 		uint32 offsetToName;
-		local uint32 unknownByteStartOffset = FTell();
-		uint32 offsetToUnknownByte;
-		uint32 unknownUInt32;
+		local uint32 unknownStringStartOffset = FTell();
+		uint32 offsetToUnknownString;
+		uint32 maxBoneCount;
 		local uint32 returnPos = FTell();
 		FSeek(nameStartOffset + offsetToName);
 		string name;
-		FSeek(unknownByteStartOffset + offsetToUnknownByte);
-		byte unknownByte;
+		FSeek(unknownStringStartOffset + offsetToUnknownString);
+		string unknownString;
 		FSeek(returnPos);
 	} materials[header.materialCount] <optimize=false>;
 
