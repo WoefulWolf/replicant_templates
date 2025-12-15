@@ -27,12 +27,12 @@ typedef struct {
 		uint32	totalIndexBuffersSize;
 		DataOffset  indexBuffersOffset;
 		float unknownFloat;
-		uint32	boneCount;
+		uint32	socketCount;
+		local uint32 socketsStartOffset = FTell();
+		uint32	offsetToSockets;
+		uint32 	boneCount;
 		local uint32 bonesStartOffset = FTell();
 		uint32	offsetToBones;
-		uint32 	bonePoseCount;
-		local uint32 bonePosesStartOffset = FTell();
-		uint32	offsetToBonePoses;
 		uint32 	objectCount;
 		local uint32 objectsStartOffset = FTell();
 		uint32	offsetToObjects;
@@ -44,7 +44,7 @@ typedef struct {
 		uint32	offsetToMaterialGroups;
 	} header;
 
-	FSeek( header.bonesStartOffset + header.offsetToBones );
+	FSeek( header.socketsStartOffset + header.offsetToSockets );
 	struct {
 		local uint32 nameStartOffset = FTell();
 		uint32  offsetToName;
@@ -52,7 +52,7 @@ typedef struct {
 		FSeek(nameStartOffset + offsetToName);
 		string name;
 		FSeek(returnPos);
-		int32	parentBoneIndex;
+		int32	parentIndex;
 		struct {
 			float x;
 			float y;
@@ -69,9 +69,9 @@ typedef struct {
 			float y;
 			float z;
 		} position;
-	} bones[header.boneCount] <optimize=false>;
+	} sockets[header.socketCount] <optimize=false>;
 
-	FSeek( header.bonePosesStartOffset + header.offsetToBonePoses );
+	FSeek( header.bonesStartOffset + header.offsetToBones );
 	struct {
 		local uint32 nameStartOffset = FTell();
 		uint32  offsetToName;
@@ -79,21 +79,21 @@ typedef struct {
 		FSeek(nameStartOffset + offsetToName);
 		string name;
 		FSeek(returnPos);
-		int32	unknownIndex;
+		int32	socketIndex;
 		float	length;
 		float   unknownMatrix0[16];
 		float   unknownMatrix1[16];
-	} bonePoses[header.bonePoseCount] <optimize=false>;
+	} bones[header.boneCount] <optimize=false>;
 
 	FSeek( header.objectsStartOffset + header.offsetToObjects );
 	struct {
 		uint32  indicesStartOffset;
-		uint32  unknownUInt32_1;
-		uint32  unknownUInt32_2;
+		uint32  unknown0;
+		uint32  socketIndex;
 		uint32  vertexCount;
 		uint32  indexCount;
 		uint32  indexBufferSize;
-		uint32  unknownUInt32_6;
+		uint32  maxBoneCount;
 		uint32  vertexBufferCount;
 		local uint32 vertexBuffersStartOffset = FTell();
 		uint32  offsetToVertexBuffers;
