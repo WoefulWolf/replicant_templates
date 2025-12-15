@@ -74,7 +74,7 @@ typedef struct {
         uint32 unknown0; // always 0
         uint32 rowPitch;
         uint32 unknown1; // always 0
-        uint32 size;
+        uint32 sliceSize;
         uint32 unknown2; // always 0
         uint32 width;
         uint32 height;

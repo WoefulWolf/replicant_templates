@@ -7,7 +7,7 @@ struct tpGxTexData(tpGxTexHead &texHead) {
         FSeek(fileDataStart + texHead.subresources[i].offset);
         struct (tpGxTexHead &texHead) {
             local uint32 subresourceStart = FTell();
-            FSeek(subresourceStart + texHead.subresources[i].size);
+            FSeek(subresourceStart + texHead.subresources[i].sliceSize * texHead.header.depth);
         } subresource(texHead);
     }
 };
