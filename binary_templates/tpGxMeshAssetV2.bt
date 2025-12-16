@@ -8,7 +8,7 @@ typedef struct {
     uint32 offsetToImportedMaterials;
     
     FSeek(meshesStartOffset + offsetToMeshes);
-    struct {
+    struct Mesh {
         uint32 nameHash <format=hex>; // FNV-1
         local uint32 nameStartOffset = FTell();
         uint32 offsetToName;
@@ -23,7 +23,7 @@ typedef struct {
         uint32 offsetToMaterials;
         local uint32 materialsReturnPos = FTell();
         FSeek(materialsStartOffset + offsetToMaterials);
-        struct {
+        struct MeshAssetMaterial {
             uint32 nameHash <format=hex>; // FNV-1
             local uint32 nameStartOffset = FTell();
             uint32 offsetToName;
@@ -38,12 +38,12 @@ typedef struct {
             FSeek(duplicateNameStartOffset + offsetToDuplicateName);
             string duplicateName;
             FSeek(duplicateNameReturnPos);
-        } materials[materialCount] <optimize=false>;
+        } materials[materialCount] <optimize=false, read=ReadMeshAssetMaterial>;
         FSeek(materialsReturnPos);
-    } meshes[meshCount] <optimize=false>;
+    } meshes[meshCount] <optimize=false, read=ReadMesh>;
     
     FSeek(importedMaterialsStartOffset + offsetToImportedMaterials);
-    struct {
+    struct ImportedMaterial {
         uint32 nameHash <format=hex>; // FNV-1
         local uint32 nameStartOffset = FTell();
         uint32 offsetToName;
@@ -58,5 +58,17 @@ typedef struct {
         FSeek(pathStartOffset + offsetToPath);
         string path;
         FSeek(pathReturnPos);
-    } importedMaterials[importedMaterialCount] <optimize=false>;
+    } importedMaterials[importedMaterialCount] <optimize=false, read=ReadImportedMaterial>;
 } tpGxMeshAssetV2;
+
+string ReadMesh(Mesh &m) {
+    return m.name;
+}
+
+string ReadMeshAssetMaterial(MeshAssetMaterial &m) {
+    return m.name;
+}
+
+string ReadImportedMaterial(ImportedMaterial &im) {
+    return im.name;
+}

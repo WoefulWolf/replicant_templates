@@ -45,7 +45,7 @@ typedef struct {
 	} header;
 
 	FSeek( header.socketsStartOffset + header.offsetToSockets );
-	struct {
+	struct Socket {
 		local uint32 nameStartOffset = FTell();
 		uint32  offsetToName;
 		local uint32 returnPos = FTell();
@@ -69,10 +69,10 @@ typedef struct {
 			float y;
 			float z;
 		} position;
-	} sockets[header.socketCount] <optimize=false>;
+	} sockets[header.socketCount] <optimize=false, read=ReadSocket>;
 
 	FSeek( header.bonesStartOffset + header.offsetToBones );
-	struct {
+	struct Bone {
 		local uint32 nameStartOffset = FTell();
 		uint32  offsetToName;
 		local uint32 returnPos = FTell();
@@ -83,7 +83,7 @@ typedef struct {
 		float	length;
 		float   unknownMatrix0[16];
 		float   unknownMatrix1[16];
-	} bones[header.boneCount] <optimize=false>;
+	} bones[header.boneCount] <optimize=false, read=ReadBone>;
 
 	FSeek( header.objectsStartOffset + header.offsetToObjects );
 	struct {
@@ -114,7 +114,7 @@ typedef struct {
 	} objects[header.objectCount] <optimize=false>;
 
 	FSeek( header.materialsStartOffset + header.offsetToMaterials );
-	struct {
+	struct MeshHeadMaterial {
 		local uint32 nameStartOffset = FTell();
 		uint32 offsetToName;
 		local uint32 unknownStringStartOffset = FTell();
@@ -126,7 +126,7 @@ typedef struct {
 		FSeek(unknownStringStartOffset + offsetToUnknownString);
 		string unknownString;
 		FSeek(returnPos);
-	} materials[header.materialCount] <optimize=false>;
+	} materials[header.materialCount] <optimize=false, read=ReadMeshHeadMaterial>;
 
 	FSeek( header.materialGroupsStartOffset + header.offsetToMaterialGroups );
 	struct {
@@ -144,5 +144,17 @@ typedef struct {
 			float y;
 			float z;
 		} boundingBoxCoord2;
-	} materialGroups[header.materialGroupCount] <optimize=false>;
+	} materialGroups[header.materialGroupCount];
 } tpGxMeshHead;
+
+string ReadSocket(Socket &s) {
+    return s.name;
+}
+
+string ReadBone(Bone &b) {
+    return b.name;
+}
+
+string ReadMeshHeadMaterial(MeshHeadMaterial &m) {
+    return m.name;
+}

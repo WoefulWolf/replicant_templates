@@ -37,15 +37,6 @@ typedef struct {
 
 	if (header.importsCount != 0) {
 		FSeek(header.importsStartOffset + header.offsetToImports);
-		struct {
-			uint32 pathHash <format=hex>; // FNV-1
-			local uint32 pathStartOffset = FTell();
-			uint32 offsetToPath;
-            uint32 unknown0;
-			local uint32 returnPos = FTell();
-			FSeek(pathStartOffset + offsetToPath);
-			string path;
-			FSeek(returnPos);
-		} imports[header.importsCount] <optimize=false>;
+		Import imports[header.importsCount] <optimize=false, read=ReadImport>;
 	}
 } tpXonAssetHeader;
