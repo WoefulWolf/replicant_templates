@@ -35,7 +35,7 @@ typedef struct {
     string internalWeaponName <pos=(FTell()+offsetToInternalWeaponName-4)>;
     
     uint32 weaponID;
-    uint32 nameStringID <comment=GetString>;
+    uint32 nameStringID;
     uint32 descStringID;
     uint32 unkStringID1;
     uint32 unkStringID2;
@@ -55,15 +55,15 @@ typedef struct {
     uint32 uint32_0x4C;
     uint32 uint32_0x50;
     
-    float float_0x54;
+    float HeightOnBack; // Greater value = lower down
     uint32 uint32_0x58;
     uint32 uint32_0x5C;
     
     float float_0x60;
-    float float_0x64;
+    uint32 uint32_0x64;
     uint32 uint32_0x68;
     
-    float float_0x6C;
+    float InHandDisplacment; // Greater Value = further up in hand/grip
     uint32 uint32_0x70;
     uint32 uint32_0x74;
     
@@ -91,7 +91,7 @@ typedef struct {
     uint8  uint8_0x16E;
     uint8  uint8_0x16F;
     
-    uint32 uint32_0x170;
+    float float_0x170;
 
 } WeaponSpecBody;
 
@@ -100,7 +100,7 @@ typedef struct  {
     uint32 offsetToInternalWeaponName;
     string internalWeaponName <pos=(FTell()+offsetToInternalWeaponName-4)>;
         
-    WeaponSpecBody spec;
+    WeaponSpecBody spec <read=internalWeaponName>;
 
 } WeaponSpecEntry;
 
@@ -114,11 +114,7 @@ typedef struct {
     
     FSeek(header.dataStartOffsetMember+header.offsetToDataStart);
     
-    WeaponSpecEntry entries[header.entryCount] <optimize=false, read=ReadWeaponSpecEntryName>;
+    WeaponSpecEntry entries[header.entryCount] <optimize=false, read=internalWeaponName>;
     
 } WeaponSpecPackage;
 
-
-string ReadWeaponSpecEntryName(WeaponSpecEntry& entry) {
-    return entry.internalWeaponName;
-}
