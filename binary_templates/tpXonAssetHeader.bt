@@ -28,6 +28,8 @@ typedef struct {
                 tpGxMaterialInstanceV2 materialInstance;
             } else if (assetTypeHash == 0x8DDAB24E) {
                 tpGxMeshAssetV2 meshAsset;
+            } else if (assetTypeHash == 0x659FBAD7) {
+                tpActorAssetParam actorAsset;
             }
             
 			

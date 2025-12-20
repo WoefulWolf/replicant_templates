@@ -24,6 +24,7 @@ struct Import {
 
 #include "tpGxMeshAssetV2.bt"
 #include "tpGxMaterialInstanceV2.bt"
+#include "tpActorAssetParam.bt"
 #include "tpXonAssetHeader.bt"
 #include "tpGxMeshHead.bt"
 
