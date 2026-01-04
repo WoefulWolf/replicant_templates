@@ -1,6 +1,5 @@
 // Woeful_Wolf
 
-
 struct KPKyFile;
 
 typedef struct {
@@ -20,29 +19,24 @@ typedef struct {
     local int i;
     for (i = 0; i < fileCount; i++) {
          
-        if (fileStartOffset[i] < 1) {
-            continue;    
-        } 
+        if (fileStartOffset[i] < 1) { continue; } 
         
         FSeek(KPKyStart + fileStartOffset[i]);
         
-
         struct {
+            
             char id[4] <pos=FTell(), hidden=true>;
-            
             if (id == "KPK\x7F" || id == "KPKy") {
-                KPKyFile kpky;
-            } else if (id == "CJF\x01") {
+                KPKyFile kpky; 
+            } 
+            else if (id == "CJF\x01") {
                 CJFFile cjf;
-                }
-            
+            }
             else {
                 byte data[fileSize[i]];
             }
             
-            
         } file <optimize=false>;
-        
     }
 } KPKyFile;
 
