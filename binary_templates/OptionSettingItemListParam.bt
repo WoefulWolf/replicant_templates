@@ -1,0 +1,28 @@
+typedef struct {
+    
+    uint32 entryCount;
+    uint32 entriesOffset;
+    
+    struct {
+        
+        struct {
+            
+            int32 optionNameStringID;
+            int32 optionDescStringID;
+            uint32 offsetToJPString;
+            string JPstr <pos=(startof(offsetToJPString)+offsetToJPString)>;
+            uint32 u32_0c;
+            uint32 u32_10;
+            uint32 u32_14;
+           
+        } entry[entryCount] <optimize=false>;
+        
+        
+        
+    } entries <pos=(startof(entriesOffset)+entriesOffset)>;
+    
+    
+    
+    
+    
+    } OptionSettingItemListParam;

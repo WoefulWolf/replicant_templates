@@ -36,6 +36,8 @@ struct Import {
 #include "tpTandaFontSdfParam.bt"
 #include "tpArchiveFileParam.bt"
 #include "WeaponSpecPackage.bt"
+#include "OptionSettingItemListParam.bt"
+#include "WidgetParam.bt"
 
 struct {
     char    magic[4];

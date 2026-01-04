@@ -6,36 +6,28 @@ typedef enum <ubyte> {
 
 
 typedef struct {
-    local uint64 filename_offset_field_pos = FTell();
+    
     uint32 offsetToFilename;
+    string filename <pos=(FTell()+offsetToFilename-4)>;
+    
     uint32 arcOffsetScale;
     ArchiveLoadType loadType;
     ubyte  padding[3];
-    if (offsetToFilename != 0) {
-        local int64 save_pos = FTell();
-        FSeek(filename_offset_field_pos + offsetToFilename);
-        string filename;
-        FSeek(save_pos);
-    }
+
 } ArchiveEntry;
 
 
 typedef struct {
     uint32 pathHash; // 32-bit FNV-1
 
-    local uint64 name_offset_pos = FTell();
     uint32 nameOffset;
-    if (nameOffset > 0 && nameOffset < FileSize()) {
-        local int64 save_pos = FTell();
-        FSeek(name_offset_pos + nameOffset);
-        string FilePath;
-        FSeek(save_pos);
-    }
+    string name <pos=(FTell()+nameOffset-4)>;
+
     uint32 scaledOffset; // for LOAD_TYPE 0, it points to the file in the decompressed buffer
                         // for 1 and 2, it points to the zstd frame in uncompressed buffer
     uint32 compressedSize;
-    uint32 packFileSerializedSize; // see PACK.bt
-    uint32 packFileResourceSize; // see PACK.bt
+    uint32 packFileSerializedSize; 
+    uint32 packFileResourceSize; 
     ubyte archiveIndex;
     ubyte flags;
     ubyte padding[2];
@@ -44,15 +36,16 @@ typedef struct {
 
 typedef struct {
     uint32 numArchives;
-    local int64 archive_array_offset_field_pos = FTell();
     uint32 offsetToArray;
     uint32 fileEntryCount;
-    local int64 file_table_offset_field_pos = FTell();
     uint32 offsetToFileTable;
 
-    FSeek(archive_array_offset_field_pos + offsetToArray);
-    ArchiveEntry entries[numArchives] <optimize=false>;
-
-    FSeek(file_table_offset_field_pos + offsetToFileTable);
-    FileEntry fileTable[fileEntryCount] <optimize=false>;
+    struct { 
+        ArchiveEntry archive[numArchives] <read=filename, optimize=false>;
+    } archives <pos=(startof(offsetToArray)+offsetToArray), optimize=false>;
+    
+    struct {
+        FileEntry file[fileEntryCount] <read=name, optimize=false>;
+    } files <pos=(startof(offsetToFileTable)+offsetToFileTable),optimize=false>;
+    
 } tpArchiveFileParam;

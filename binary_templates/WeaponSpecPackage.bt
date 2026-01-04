@@ -1,3 +1,9 @@
+typedef enum <uint8> { 
+    ONE_HANDED = 0,
+    TWO_HANDED = 1,
+    SPEAR = 2 
+} WeaponType;
+
 typedef struct {
     
     uint32 upgradeCost;
@@ -84,14 +90,15 @@ typedef struct {
     WeaponStats level4Stats;
     WeaponUpgradeRecepie level4Recepie;
     
-    uint32 uint32_0x168;
+    uint32 excludeFromCompletion;
+    WeaponType  weaponType;
     
-    uint8  uint8_0x16C;
     uint8  uint8_0x16D;
     uint8  uint8_0x16E;
     uint8  uint8_0x16F;
-    
-    float float_0x170;
+    uint8  uint8_0x170;
+
+    byte padding[3];
 
 } WeaponSpecBody;
 
