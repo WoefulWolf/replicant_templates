@@ -1,21 +1,51 @@
 // Woeful_Wolf
 
 struct {
+    local uint cjfStart = FTell();
 	char	id[4];
-	string	name;
-	alignRelative(0, 8);
-	uint32	unknownUInt32_0;
-	uint32	unknownUInt32_1;
-	uint32	unknownUInt32_2;
-	uint32	unknownUInt32_3;
-	uint32	unknownUInt32_4;
-	uint32	unknownUInt32_5;
-	uint32	unknownUInt32_6;
-	uint32	unknownUInt32_7;
-	uint32	unknownUInt32_8;
-	uint32	unknownUInt32_9;
-	uint32	unknownUInt32_10;
-	uint32	unknownUInt32_11;
-	uint32	unknownUInt32_12;
-	float	unknownFloat0;
+	char	name[32];
+	uint32	jointCount;
+	uint32	offsetFloats;
+	uint32	offsetJoints;
+	uint32	offsetLengthsMaybe;
+	uint32	offsetAnimationIndices;
+	uint32	offsetMatrices;
+	uint32	offsetInverseMatrices;
+	uint32	offsetTransformBuffers;
+    
+    FSeek(cjfStart + offsetFloats);
+	float	unknownFloats[10];
+    
+    FSeek(cjfStart + offsetJoints);
+    struct {
+        uint32 index;
+        char name[32];
+    } joints[jointCount] <optimize=false>;
+    
+    FSeek(cjfStart + offsetLengthsMaybe);
+    float lengthsMaybe[jointCount];
+    
+    FSeek(cjfStart + offsetAnimationIndices);
+    struct {
+        short animationIndices0[jointCount];
+        short animationIndices1[jointCount];
+        short animationIndices2[jointCount];
+    } animationIndices;
+    
+    FSeek(cjfStart + offsetMatrices);
+    struct {
+        float val[16];
+    } matrices[jointCount] <optimize=false>;
+    
+    FSeek(cjfStart + offsetInverseMatrices);
+    struct {
+        float val[16];
+    } inverseMatrices[jointCount] <optimize=false>;
+    
+    FSeek(cjfStart + offsetTransformBuffers);
+    struct {
+        float rotation[4];
+        float position[4];
+        float scale[4];
+    } transformBuffers[jointCount] <optimize=false>;
 } content;
