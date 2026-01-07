@@ -1,3 +1,116 @@
+typedef enum <uint8> { 
+    ONE_HANDED = 0,
+    TWO_HANDED = 1,
+    SPEAR = 2 
+} WeaponType;
+
+typedef struct {
+    
+    uint32 upgradeCost;
+    int32 ingredientId1;
+    uint32 ingredientCount1;
+    int32 ingredientId2;
+    uint32 ingredientCount2;
+    int32 ingredientId3;
+    uint32 ingredientCount3;
+    
+} WeaponUpgradeRecepie;
+
+typedef struct {
+    
+    uint32 attack;
+    uint32 magicPower;
+    uint32 guardBreak;  
+    uint32 armourBreak;
+    float float_0x10;
+    uint32 weight;
+    float float_0x18;
+    float float_0x1c;
+    
+} WeaponStats;
+
+
+typedef struct {
+    
+    uint32 uint32_0x00;
+    uint32 uint32_0x04;
+        
+    uint32 offestToJPName;
+    string JPName <pos=(FTell()+offestToJPName-4)>;
+    uint32 offsetToInternalWeaponName;
+    string internalWeaponName <pos=(FTell()+offsetToInternalWeaponName-4)>;
+    
+    uint32 weaponID;
+    uint32 nameStringID;
+    uint32 descStringID;
+    uint32 unkStringID1;
+    uint32 unkStringID2;
+    uint32 unkStringID3;
+    uint32 storyStringID;
+    
+    uint32 uint32_0x2C;
+    uint32 uint32_0x30;
+    uint32 uint32_0x34;
+    uint32 listOrder;
+    
+    float float_0x3C;
+    uint32 uint32_0x40;
+    uint32 uint32_0x44;
+    
+    float float_0x48;
+    uint32 uint32_0x4C;
+    uint32 uint32_0x50;
+    
+    float HeightOnBack; // Greater value = lower down
+    uint32 uint32_0x58;
+    uint32 uint32_0x5C;
+    
+    float float_0x60;
+    uint32 uint32_0x64;
+    uint32 uint32_0x68;
+    
+    float InHandDisplacment; // Greater Value = further up in hand/grip
+    uint32 uint32_0x70;
+    uint32 uint32_0x74;
+    
+    float float_0x78;
+    uint32 uint32_0x7C;
+    uint32 uint32_0x80;
+    
+    int32 int32_0x84;
+    uint32 shopPrice;
+    float knockbackPercent;
+    uint32 uint32_0x90;
+    
+    WeaponStats level1Stats;
+    WeaponStats level2Stats;
+    WeaponUpgradeRecepie level2Recepie;
+    WeaponStats level3Stats;
+    WeaponUpgradeRecepie level3Recepie;
+    WeaponStats level4Stats;
+    WeaponUpgradeRecepie level4Recepie;
+    
+    uint32 excludeFromCompletion;
+    WeaponType  weaponType;
+    
+    uint8  uint8_0x16D;
+    uint8  uint8_0x16E;
+    uint8  uint8_0x16F;
+    uint8  uint8_0x170;
+
+    byte padding[3];
+
+} WeaponSpecBody;
+
+typedef struct  {
+    uint32 uint32_0x00;
+    uint32 offsetToInternalWeaponName;
+    string internalWeaponName <pos=(FTell()+offsetToInternalWeaponName-4)>;
+        
+    WeaponSpecBody spec <read=internalWeaponName>;
+
+} WeaponSpecEntry;
+
 typedef struct {
     
     struct {
@@ -8,24 +121,7 @@ typedef struct {
     
     FSeek(header.dataStartOffsetMember+header.offsetToDataStart);
     
-    struct {
-        uint32 unk1; 
-        uint32 unk2;
-        uint32 unk3;
-        uint32 unk4;
-        uint32 unk5;
-        uint32 unk6;
-        uint32 weaponID;
-        uint32 nameStringID;
-        uint32 descStringID;
-        uint32 unkStringID1;
-        uint32 unkStringID2;
-        uint32 unkStringID3;
-        uint32 storyStringID;
-        uint32 unk13[81];
-        byte unk14;
-        byte padding[3];
-        
-    } entries[header.entryCount];
+    WeaponSpecEntry entries[header.entryCount] <optimize=false, read=internalWeaponName>;
     
 } WeaponSpecPackage;
+

@@ -1,0 +1,48 @@
+typedef struct {
+    
+    uint32 u32_00;
+    uint32 offsetToPackNameString;
+    string packName <pos=(startof(offsetToPackNameString)+offsetToPackNameString)>;
+    uint32 u32_08;
+    uint32 offsetToResourceNameString;
+    string resourceName <pos=(startof(offsetToResourceNameString)+offsetToResourceNameString)>;
+    uint32 u32_10;
+    uint32 entryCount;
+    uint32 offsetToDataStart;
+    uint32 u32_1c;
+    uint32 u32_20;
+    uint32 u32_24;
+    uint32 u32_28;
+    uint32 u32_2c;
+    uint32 u32_30;
+
+    if (entryCount == 0) break;
+
+    FSeek(startof(offsetToDataStart)+offsetToDataStart);
+    
+    struct {
+        
+        uint32 u32_00;
+        uint32 offsetToNameString;
+        string name <pos=(startof(offsetToNameString)+offsetToNameString)>;
+
+        uint32 subEntryCount;
+        uint32 offsetToSubEntries;
+
+        if (subEntryCount == 0) break;
+        
+        FSeek(startof(offsetToSubEntries)+offsetToSubEntries);
+        struct {
+            
+            uint32 u32_00;
+            uint32 offsetToNameString;
+            string name <pos=(startof(offsetToNameString)+offsetToNameString)>;
+
+        } subEntry[subEntryCount] <optimize=false>;
+        FSeek(startof(offsetToSubEntries)+4);
+    
+
+
+    } entries[entryCount] <optimize=false>;
+    
+} WidgetParam;

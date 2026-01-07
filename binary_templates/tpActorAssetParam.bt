@@ -1,0 +1,24 @@
+typedef struct {
+    
+    uint32 entryCount;
+    uint32 offsetToDataStart;
+
+    FSeek(startof(offsetToDataStart) + offsetToDataStart);
+
+    struct {
+        uint32 entryOffset;
+        struct {
+            
+            uint32 u32_00;
+            uint32 assetPathHash <format=hex>;
+            uint32 offsetToAssetPath;
+            string assetPath <pos=(FTell()+offsetToAssetPath-4)>;
+            uint32 u32_0c;
+            uint32 u32_10;
+            
+        } entryBody <pos=(FTell()+entryOffset-4)>;
+    } entry[entryCount] <optimize=false, read=entryBody.assetPath>;
+    
+    
+} tpActorAssetParam;
+

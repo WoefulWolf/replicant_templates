@@ -25,5 +25,9 @@ struct {
         tpArchiveFileParam archiveFileParam;
     } else if (assetType == "WeaponSpecPackage") {
         WeaponSpecPackage weaponSpecPackage;
+    } else if (assetType == "OptionSettingItemListParam") {
+        OptionSettingItemListParam optionSettingItemListParam;
+    } else if (assetType == "WidgetParam") {
+        WidgetParam widgetParam;
     }
 } content;
