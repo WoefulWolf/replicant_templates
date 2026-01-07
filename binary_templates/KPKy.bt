@@ -12,9 +12,11 @@ typedef struct {
     uint32 fileSize[fileCount];
 
     uint32 fileNameSize;
-    struct {
-        char fileName[fileNameSize];
-    } fileName[fileCount] <optimize=false>;
+    if (fileNameSize != 0) {
+        struct {
+            char fileName[fileNameSize];
+        } fileName[fileCount] <optimize=false>;
+    }
 
     local int i;
     for (i = 0; i < fileCount; i++) {
@@ -30,7 +32,7 @@ typedef struct {
                 KPKyFile kpky; 
             } 
             else if (id == "CJF\x01") {
-                CJFFile cjf;
+                #include "CJF.bt"
             }
             else {
                 byte data[fileSize[i]];
